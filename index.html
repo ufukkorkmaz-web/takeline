@@ -130,30 +130,106 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
   .timeline{height:230px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* 2026 UX refresh: clearly grouped workflow, accessible controls, and calmer spacing. */
+:root{--ink:#101419;--panel:#181e25;--panel2:#252d36;--line:#35404b;--text:#f2f3f2;--muted:#a6b0bb;--clip:#234957;--wave:#a1dbe7;--teal:#63dfcf;--amber:#f5c16b;--rec:#ff6458}
+body{font-size:14px}
+.btn{min-height:36px;padding:8px 13px;border-radius:9px;transition:background .15s,border-color .15s}
+.btn:hover:not(:disabled){background:#303944;border-color:#687787}
+.btn.primary{background:#bdebdc;border-color:#bdebdc;color:#12251f;font-weight:600}
+.btn.primary:hover:not(:disabled){background:#d3f8eb;border-color:#d3f8eb}
+.top{display:flex;flex-wrap:nowrap;align-items:center;padding:12px 22px;gap:20px;min-height:77px;position:relative;z-index:10}
+.brandblock{min-width:185px}.brand{font-size:18px;font-weight:600;letter-spacing:.05em}.brandtag{font-size:10px;letter-spacing:.13em;color:var(--teal);vertical-align:middle}.brandsub{color:var(--muted);font-size:11px;margin-top:3px}
+.stats{flex:1 1 auto;font-size:12px;line-height:1.5}
+.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.quick-toggle{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);white-space:nowrap;cursor:pointer;font-weight:500}
+.quick-toggle input{width:16px;height:16px;accent-color:var(--teal);cursor:pointer}
+.settings-menu{position:relative}.settings-menu>summary{list-style:none;display:flex;align-items:center;gap:10px;user-select:none;white-space:nowrap}.settings-menu>summary::-webkit-details-marker{display:none}
+.settings-menu[open]>summary{border-color:var(--amber)}
+.settings-popover{position:absolute;top:calc(100% + 9px);right:0;width:min(340px,calc(100vw - 28px));padding:18px;display:flex;flex-direction:column;gap:13px;background:#222b34;border:1px solid #4b5968;box-shadow:0 18px 55px #0009;border-radius:13px;z-index:15}
+.settings-popover label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--text)}
+.settings-popover label:has(input[type=checkbox]){justify-content:flex-start}
+.settings-popover input[type=checkbox]{accent-color:var(--teal);width:16px;height:16px}
+.settings-popover select,.settings-popover input[type=number]{background:var(--panel);border:1px solid #596574;border-radius:7px;padding:7px;max-width:175px;min-width:0}
+.settings-popover input[type=number]{width:60px}.settings-heading{font-size:13px;color:var(--teal);font-weight:600}.settings-divider{border-top:1px solid var(--line);padding-top:11px}.setting-input{white-space:nowrap}
+main{grid-template-columns:minmax(275px,330px) minmax(0,1fr)}
+.panel-heading,.stage-heading,.timeline-heading{display:flex;align-items:center;gap:12px}
+.panel-heading{padding:17px 17px 13px}.step-heading{display:flex;align-items:center;gap:12px}.stepnum{display:inline-grid;place-items:center;width:31px;height:31px;flex:none;border-radius:9px;background:#304348;color:#90e0d0;font:600 12px var(--mono)}
+.panel-heading strong,.step-heading strong,.timeline-heading strong{display:block;font-size:14px;font-weight:600}
+.panel-heading small,.step-heading small,.timeline-heading small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.tabs{padding:0 12px 11px;gap:6px;border-bottom:1px solid var(--line)}
+.tabs button{padding:9px 8px;border-radius:8px;border:1px solid transparent;font-size:12px}.tabs button[aria-selected=true]{background:var(--panel2);border-color:#42505a;color:var(--text)}
+.line{padding:12px 10px;margin:3px 5px;border-radius:9px}.line.cur{background:#273740;border-color:#5c8a8d}.line .txt{font-size:13px}.line .st{margin-top:4px}
+.editor{padding:16px;gap:12px}.editor textarea{line-height:1.65;border-radius:10px;padding:13px}
+.stage{padding:18px 28px;gap:12px}.stage-heading{justify-content:space-between;flex-wrap:wrap}.lbl{background:var(--panel2);padding:6px 10px;border-radius:7px;letter-spacing:0;font-size:11px}
+.prompter{padding:15px 4px;gap:20px}.ctx{color:#82909c;font-size:18px}.cur{max-width:980px;line-height:1.4}
+.controls{border-top:1px solid var(--line);padding:17px 0 3px;gap:14px 18px;justify-content:space-between}
+.group{gap:7px;flex-wrap:wrap}.recwrap{padding:5px 12px 5px 5px;border-radius:40px;background:#242c35;border:1px solid #3e4b58}
+.recbtn{width:58px;height:58px;border-width:2px;background:#35272a}.recbtn:hover{background:#493034}.rectxt{min-width:105px}.rectxt strong{font-size:14px}.meter{height:7px;width:105px}
+.err{padding:0 6px;font-size:12px;min-height:19px}
+.timeline{height:244px}.timeline-heading{padding:11px 18px 7px}.tltool{gap:8px 12px;padding:7px 18px 11px}.edithelp{flex:1;min-width:190px}.zoom{margin-left:0}
+#tlscroll{background:#141a20}.clip{border-radius:7px}.clip.sel{border-color:#9fded4}
+.clip{cursor:grab;touch-action:pan-y;user-select:none}
+.clip.dragging{opacity:.45;border-style:dashed;cursor:grabbing}
+.clip.drag-target{outline:2px solid var(--amber);outline-offset:2px}
+#dropMarker{position:absolute;top:24px;bottom:9px;width:3px;border-radius:3px;background:var(--amber);pointer-events:none;z-index:6;display:none;box-shadow:0 0 8px #f3b94d66}
+#tlscroll.drag-active{cursor:grabbing}
+
+.hint{line-height:1.55}
+@media(max-width:1200px){.top{flex-wrap:wrap}.stats{order:3;flex-basis:100%}.header-actions{margin-left:auto}.controls{justify-content:center}}
+@media(max-width:860px){body{display:flex;flex-direction:column;min-height:100vh;height:auto;overflow:auto}.top{padding:14px;gap:10px}.brandblock{min-width:auto}.stats{order:3}.header-actions{gap:7px}.quick-toggle{font-size:12px}.script{max-height:340px;min-height:220px}.stage{padding:16px;min-height:420px}.controls{justify-content:center}.prompter{min-height:160px}.timeline{height:258px;flex-shrink:0}.edithelp{display:none}}
+/* Compact recording dock: reserve the height for the full script line. */
+.stage{padding:10px 20px 8px;gap:5px}
+.stage-heading{min-height:28px}
+.prompter{padding:3px 2px;gap:7px;flex:1 1 auto;min-height:0}
+.prompter .ctx{font-size:14px;line-height:1.25;min-height:0;-webkit-line-clamp:1;opacity:.74}
+.prompter .cur{max-width:none;width:100%;line-height:1.25;overflow-y:auto;overflow-x:hidden}
+.controls{padding:6px 0 0;gap:5px 10px;align-items:center;flex:0 0 auto}
+.controls .group{gap:5px}
+.controls .btn{padding:5px 8px;font-size:12px}
+.recwrap{padding:2px 8px 2px 3px;gap:6px}
+.recbtn{width:40px;height:40px}
+.recbtn .dot{width:15px;height:15px}
+.rectxt{min-width:78px;gap:0}
+.rectxt strong{font-size:12px}
+.rectxt span{font-size:11px}
+.meter{width:78px;height:4px}
+.err{min-height:15px;font-size:11px;line-height:1.2}
+@media(max-width:860px){.stage{padding:10px 12px;min-height:420px}.prompter{min-height:200px}.controls{justify-content:center}}
+@media(max-width:520px){.header-actions{width:100%;justify-content:space-between}.export-action{flex:1}.quick-toggle{padding:8px}.brandblock{width:100%}.stage-heading{gap:8px}.group.fontctl{justify-content:center}.controls>.group:nth-child(3){justify-content:center}.settings-popover{right:-75px}.ctx{font-size:16px}}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="brand">TAKELINE</div>
+  <div class="brandblock"><div class="brand">TAKELINE <span class="brandtag">STUDIO</span></div><div class="brandsub">Your script-to-recording workspace</div></div>
   <div class="stats" id="stats" aria-live="polite"></div>
-  <div class="opts">
-    <button class="btn" id="micBtn" type="button">Enable mic</button>
-    <label>Input <select id="devSel"><option value="">Default microphone</option></select></label>
-    <label>Count-in <select id="countSel"><option value="0">Off</option><option value="2">2 s</option><option value="3">3 s</option></select></label>
-    <label><input type="checkbox" id="autoChk"> Next line after stop</label>
-    <label><input type="checkbox" id="trimChk"> Trim silence</label>
-    <label>Gap <input type="number" id="gapIn" min="0" max="5" step="0.1"> s</label>
-    <label><input type="checkbox" id="readChk"> Check my reading</label>
-    <label>Speech language <select id="langSel"></select></label>
-    <button class="btn primary" id="exportBtn" type="button">Export mix (WAV)</button>
+  <div class="header-actions">
+    <button class="btn mic-action" id="micBtn" type="button">Enable microphone</button>
+    <label class="quick-toggle" title="Reduce steady background sounds in new microphone recordings. Support depends on your browser and microphone."><input type="checkbox" id="noiseChk"><span>Noise reduction</span></label>
+    <details class="settings-menu"><summary class="btn">Settings <span aria-hidden="true">⌄</span></summary>
+      <div class="settings-popover">
+        <strong class="settings-heading">Recording preferences</strong>
+        <label>Microphone <select id="devSel"><option value="">Default microphone</option></select></label>
+        <label>Count-in <select id="countSel"><option value="0">Off</option><option value="2">2 s</option><option value="3">3 s</option></select></label>
+        <label><input type="checkbox" id="autoChk"> Move to next line after recording</label>
+        <label><input type="checkbox" id="trimChk"> Trim silence at the start and end</label>
+        <label>Gap between lines <span class="setting-input"><input type="number" id="gapIn" min="0" max="5" step="0.1"> s</span></label>
+        <div class="settings-heading settings-divider">Reading support</div>
+        <label><input type="checkbox" id="readChk"> Check my reading</label>
+        <label>Speech language <select id="langSel"></select></label>
+        <p class="hint">Noise reduction works on new recordings. Your takes stay in this browser.</p>
+      </div>
+    </details>
+    <button class="btn primary export-action" id="exportBtn" type="button">↓ Export WAV</button>
   </div>
 </header>
 
 <main>
   <aside class="script">
+    <div class="panel-heading"><span class="stepnum">01</span><div><strong>Prepare your script</strong><small>Select a line, or edit your script</small></div></div>
     <div class="tabs" role="tablist">
-      <button role="tab" id="tabLines" aria-selected="true" type="button">Lines</button>
-      <button role="tab" id="tabScript" aria-selected="false" type="button">Script</button>
+      <button role="tab" id="tabLines" aria-selected="true" type="button">Recorded lines</button>
+      <button role="tab" id="tabScript" aria-selected="false" type="button">Edit / import script</button>
     </div>
     <ul id="list" aria-label="Script lines"></ul>
     <div class="editor" id="editor">
@@ -171,7 +247,7 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
   </aside>
 
   <section class="stage" aria-label="Prompter">
-    <div class="lbl" id="lineLbl"></div>
+    <div class="stage-heading"><div class="step-heading"><span class="stepnum">02</span><div><strong>Record your lines</strong><small>Read the large text and record one line at a time</small></div></div><div class="lbl" id="lineLbl"></div></div>
     <div class="prompter">
       <div class="ctx" id="prevCtx"></div>
       <div class="cur" id="curText"></div>
@@ -189,8 +265,8 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
       </div>
       <div class="group">
         <div class="takenav"><button class="btn" id="tkPrev" type="button" aria-label="Previous take">&lsaquo;</button><span id="tkLbl">No takes</span><button class="btn" id="tkNext" type="button" aria-label="Next take">&rsaquo;</button></div>
-        <button class="btn" id="listenBtn" type="button">Listen</button>
-        <button class="btn" id="saveTkBtn" type="button">Save take</button>
+        <button class="btn" id="listenBtn" type="button">▶ Listen</button>
+        <button class="btn" id="saveTkBtn" type="button">↓ Save take</button>
         <button class="btn warn" id="delTkBtn" type="button">Delete take</button>
       </div>
       <div class="group fontctl"><button class="btn" id="fMinus" type="button" aria-label="Smaller text">A&minus;</button><button class="btn" id="fPlus" type="button" aria-label="Larger text">A+</button></div>
@@ -199,17 +275,18 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
 </main>
 
 <section class="timeline" aria-label="Timeline">
+  <div class="timeline-heading"><span class="stepnum">03</span><div><strong>Review &amp; edit</strong><small>Drag takes to change their order, then play or export</small></div></div>
   <div class="tltool">
-    <button class="btn primary" id="playBtn" type="button">Play all</button>
+    <button class="btn primary" id="playBtn" type="button">▶ Play all</button>
     <button class="btn" id="homeBtn" type="button">&#9198; Start</button>
     <button class="btn" id="splitBtn" type="button" title="Split the clip at the playhead (S)">Split at playhead</button>
     <button class="btn warn" id="cutBtn" type="button" title="Remove selected timeline section (Delete)">Delete section</button>
     <button class="btn" id="undoEditBtn" type="button" title="Restore the selected line's original take">Restore take</button>
     <div class="time" id="timeLbl">0:00.0 <small>/ 0:00.0</small></div>
-    <span class="edithelp">Click a section to select; click ruler/empty area to seek</span>
+    <span class="edithelp">Drag clips to reorder · click to select · click ruler to seek</span>
     <div class="zoom">Zoom <input type="range" id="zoomIn" min="20" max="200" step="5" aria-label="Timeline zoom"></div>
   </div>
-  <div id="tlscroll"><div id="lane"><div id="playhead"></div></div></div>
+  <div id="tlscroll"><div id="lane"><div id="playhead"></div><div id="dropMarker"></div></div></div>
 </section>
 
 <script>
@@ -231,9 +308,9 @@ const SAMPLE = [
 const S = {
   paras:[], cur:0, scriptText:'', tab:'lines', pendingDiscard:0,
   rec:'idle', recIdx:-1, countLeft:0, stream:null, an:null, anBuf:null, mr:null, chunks:[],
-  deviceId:'', pos:0, play:null, level:0, selectedSeg:null,
+  deviceId:'', pos:0, play:null, level:0, selectedSeg:null, timelineOrder:[],
   liveSt:null, wordEls:[], curKey:'', sp:null, finishing:false,
-  set:{gap:0.5, trim:true, count:2, auto:true, zoom:60, font:44, read:true, lang:'en-US'}
+  set:{gap:0.5, trim:true, noise:true, count:2, auto:true, zoom:60, font:44, read:true, lang:'en-US'}
 };
 
 /* ---------- audio context ---------- */
@@ -366,20 +443,27 @@ async function makeTake(blob,id){
   const tr=findTrim(buf);
   return {id:id||uid(),blob,mime:blob.type,buf,ts:tr.ts,te:tr.te};
 }
-function layout(){
-  const clips=[]; let t=0, hasLine=false;
+/* Timeline order is independent of script order, and is saved with the project. */
+function clipKey(k){ return S.paras[k.i].id+':'+k.tk.id+':'+k.segId; }
+function orderedClips(){
+  const entries=[];
   S.paras.forEach((p,i)=>{
     const tk=activeTake(p); if(!tk||!tk.buf) return;
-    const parts=partsOf(tk).filter(seg=>seg.b-seg.a>=0.005);
-    if(!parts.length) return;
-    if(hasLine) t+=S.set.gap;
-    hasLine=true;
-    for(const seg of parts){
-      const d=seg.b-seg.a;
-      clips.push({i,tk,segId:seg.id,a:seg.a,d,start:t});
-      t+=d;
-    }
+    for(const seg of partsOf(tk)) if(seg.b-seg.a>=0.005)
+      entries.push({i,tk,segId:seg.id,a:seg.a,d:seg.b-seg.a});
   });
+  const keys=entries.map(clipKey), unique=S.timelineOrder.filter((key,i,arr)=>keys.includes(key)&&arr.indexOf(key)===i);
+  for(const key of keys) if(!unique.includes(key)) unique.push(key);
+  S.timelineOrder=unique;
+  const byKey=new Map(entries.map(k=>[clipKey(k),k]));
+  return unique.map(key=>byKey.get(key)).filter(Boolean);
+}
+function layout(){
+  const clips=[]; let t=0, lastLine=-1;
+  for(const k of orderedClips()){
+    if(lastLine>=0&&lastLine!==k.i)t+=S.set.gap;
+    clips.push({...k,start:t}); t+=k.d; lastLine=k.i;
+  }
   return {clips,total:t};
 }
 function selectedClip(){
@@ -410,7 +494,9 @@ function splitAtPlayhead(){
   if(idx<0) return;
   const part=tk.parts[idx], at=k.a+(S.pos-k.start);
   const left={id:uid(),a:part.a,b:at}, right={id:uid(),a:at,b:part.b};
+  const oldKey=clipKey(k), orderAt=S.timelineOrder.indexOf(oldKey);
   tk.parts.splice(idx,1,left,right);
+  if(orderAt>=0) S.timelineOrder.splice(orderAt,1,S.paras[k.i].id+':'+tk.id+':'+left.id,S.paras[k.i].id+':'+tk.id+':'+right.id);
   S.cur=k.i;
   S.selectedSeg=`${k.i}:${tk.id}:${right.id}`;
   renderAll(); save(); setErr('Split created. Select either section and use Delete section to remove it.',true);
@@ -444,13 +530,15 @@ function micError(e){
 async function ensureMic(){
   if(S.stream && S.stream.active) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw new Error('nomd');
-  const c={echoCancellation:false,noiseSuppression:false,autoGainControl:false};
+  const c={echoCancellation:S.set.noise,noiseSuppression:S.set.noise,autoGainControl:false};
   if(S.deviceId) c.deviceId={exact:S.deviceId};
   S.stream=await navigator.mediaDevices.getUserMedia({audio:c});
   const ac=ctx(); const src=ac.createMediaStreamSource(S.stream);
   S.an=ac.createAnalyser(); S.an.fftSize=1024; S.anBuf=new Float32Array(1024); src.connect(S.an);
-  $('#micBtn').textContent='Mic on'; $('#micBtn').disabled=true;
+  $('#micBtn').textContent='✓ Microphone ready'; $('#micBtn').disabled=true;
   await refreshDevices();
+  const settings=S.stream.getAudioTracks()[0]?.getSettings?.()||{};
+  if(S.set.noise && settings.noiseSuppression===false) setErr('Noise reduction is requested, but this microphone/browser does not support it.','warn');
 }
 async function refreshDevices(){
   try{
@@ -672,7 +760,7 @@ function listen(){
   const k=layout().clips.find(c=>c.i===S.cur); if(!k) return;
   play(k.start,k.start+k.d);
 }
-function updatePlayBtn(){ $('#playBtn').textContent=S.play?'Pause':'Play all'; }
+function updatePlayBtn(){ $('#playBtn').textContent=S.play?'Ⅱ Pause':'▶ Play all'; }
 
 /* ---------- export ---------- */
 function mono(buf,a,d){
@@ -747,6 +835,30 @@ function renderList(){
   });
   const c=ul.querySelector('.cur'); if(c) c.scrollIntoView({block:'nearest'});
 }
+/* Fit longer script lines into the available prompter area when possible.
+   Font controls still set the preferred (maximum) size. */
+let fitPending=false;
+function queuePrompterFit(){
+  if(fitPending) return;
+  fitPending=true;
+  requestAnimationFrame(()=>{fitPending=false;fitPrompterText();});
+}
+function fitPrompterText(){
+  const p=$('.prompter'), cur=$('#curText');
+  if(!p||!cur||!p.clientHeight) return;
+  const top=$('#prevCtx'), bottom=$('#nextCtx');
+  const styles=getComputedStyle(p);
+  const gap=parseFloat(styles.rowGap||styles.gap)||0;
+  const available=Math.max(65,p.clientHeight-top.offsetHeight-bottom.offsetHeight-2*gap);
+  cur.style.maxHeight=available+'px';
+  let size=S.set.font;
+  cur.style.fontSize=size+'px';
+  while(size>22 && cur.scrollHeight>available+2){
+    size-=2;
+    cur.style.fontSize=size+'px';
+  }
+}
+
 function updateStage(){
   const n=S.paras.length, p=S.paras[S.cur], busy=S.rec!=='idle';
   $('#lineLbl').textContent=n?`Line ${S.cur+1} of ${n}`:'No script';
@@ -759,7 +871,7 @@ function updateStage(){
     cur.scrollTop=0;
   }
   paintWords();
-  cur.style.fontSize=S.set.font+'px'; cur.classList.toggle('rec',S.rec==='rec');
+  cur.style.fontSize=S.set.font+'px'; cur.classList.toggle('rec',S.rec==='rec'); queuePrompterFit();
   $('#prevCtx').textContent=S.paras[S.cur-1]?S.paras[S.cur-1].text:'';
   $('#nextCtx').textContent=S.paras[S.cur+1]?S.paras[S.cur+1].text:(p?'End of script':'');
   const tk=p&&activeTake(p);
@@ -767,6 +879,7 @@ function updateStage(){
   $('#cnt').textContent=S.rec==='count'?S.countLeft:'';
   $('#recLbl').textContent=S.rec==='count'?'Get ready (click to cancel)':S.rec==='rec'?'Stop':(tk?'Re-record':'Record');
   if(S.rec!=='rec') $('#recTime').textContent=tk&&tk.buf?fmt(partsOf(tk).reduce((n,q)=>n+q.b-q.a,0)):'0:00.0';
+  $('#noiseChk').disabled=busy||S.finishing;
   $('#prevBtn').disabled=busy||S.cur<=0;
   $('#nextBtn').disabled=busy||S.cur>=n-1;
   const tn=p?p.takes.length:0;
@@ -803,9 +916,12 @@ function renderTimeline(){
     const n=document.createElement('span'); n.className='n'; n.textContent=k.i+1; el.appendChild(n);
     const p=S.paras[k.i];
     if(p.takes.length>1){ const t=document.createElement('span'); t.className='tk'; t.textContent='take '+(p.active+1); el.appendChild(t); }
+    el.title='Drag to move this clip in the recording';
+    el.setAttribute('aria-label','Line '+(k.i+1)+' recording. Drag to reorder.');
     const cv=document.createElement('canvas'); el.appendChild(cv); lane.appendChild(el);
     drawWave(cv,k,Math.max(12,k.d*pps));
   }
+  $('#dropMarker').style.display='none';
   setPlayhead(false); updateEditBtns();
 }
 function drawWave(cv,k,wCss){
@@ -842,14 +958,15 @@ let saveT=null;
 function save(){
   clearTimeout(saveT);
   saveT=setTimeout(()=>{
-    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null,parts:t.parts||null}))}))};
+    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,timelineOrder:S.timelineOrder,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null,parts:t.parts||null}))}))};
     idbSet('project',data).catch(()=>{});
   },500);
 }
 async function restore(){
   let d=null; try{ d=await idbGet('project'); }catch(e){}
   if(!d||!d.paras){ $('#scriptTa').value=SAMPLE; S.paras=splitScript(SAMPLE).map(t=>({id:uid(),text:t,takes:[],active:-1})); return; }
-  Object.assign(S.set,d.set||{}); if(!S.set.lang) S.set.lang='en-US'; S.deviceId=d.deviceId||'';
+  S.timelineOrder=Array.isArray(d.timelineOrder)?d.timelineOrder:[];
+  Object.assign(S.set,d.set||{}); if(typeof S.set.noise!=='boolean') S.set.noise=true; if(!S.set.lang) S.set.lang='en-US'; S.deviceId=d.deviceId||'';
   for(const p of d.paras){
     const np={id:p.id,text:p.text,takes:[],active:-1};
     for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.words=t.words||null; if(Array.isArray(t.parts))tk.parts=t.parts; np.takes.push(tk); }catch(e){} }
@@ -884,7 +1001,7 @@ function wire(){
   ['dragleave','drop'].forEach(ev=>ed.addEventListener(ev,e=>{ e.preventDefault(); ed.classList.remove('drop'); }));
   ed.addEventListener('drop',e=>importFile(e.dataTransfer.files[0]));
   twoStep($('#resetBtn'),'Click again to erase all',()=>{
-    stopAll(); S.paras=[]; S.cur=0; S.pos=0; S.selectedSeg=null; $('#scriptTa').value=''; S.pendingDiscard=0; updateApplyBtn(); scriptMsg('Cleared.'); renderAll(); save();
+    stopAll(); S.paras=[]; S.timelineOrder=[]; S.cur=0; S.pos=0; S.selectedSeg=null; $('#scriptTa').value=''; S.pendingDiscard=0; updateApplyBtn(); scriptMsg('Cleared.'); renderAll(); save();
   });
   $('#list').addEventListener('click',e=>{ const li=e.target.closest('.line'); if(!li||S.rec!=='idle') return; S.cur=+li.dataset.i; S.selectedSeg=null; stopAll(); renderList(); updateStage(); markClips(true); save(); });
   $('#list').addEventListener('keydown',e=>{ if((e.key==='Enter')&&e.target.classList.contains('line')) e.target.click(); });
@@ -899,6 +1016,16 @@ function wire(){
   $('#langSel').onchange=e=>{ S.set.lang=e.target.value; save(); };
   $('#autoChk').onchange=e=>{ S.set.auto=e.target.checked; save(); };
   $('#trimChk').onchange=e=>{ S.set.trim=e.target.checked; stopAll(); renderAll(); save(); };
+  $('#noiseChk').onchange=async e=>{
+    if(S.rec!=='idle'||S.finishing){ e.target.checked=S.set.noise; return; }
+    S.set.noise=e.target.checked; save();
+    if(S.stream){
+      S.stream.getTracks().forEach(t=>t.stop()); S.stream=null; S.an=null;
+      $('#micBtn').textContent='Enable microphone'; $('#micBtn').disabled=false;
+      try{ await ensureMic(); if(!$('#err').textContent.includes('does not support')) setErr(S.set.noise?'Noise reduction enabled for new recordings.':'Noise reduction disabled for new recordings.',true); }
+      catch(err){ setErr(micError(err)); }
+    } else setErr(S.set.noise?'Noise reduction will apply to new recordings.':'Noise reduction is off for new recordings.',true);
+  }; 
   $('#gapIn').onchange=e=>{ S.set.gap=Math.min(5,Math.max(0,+e.target.value||0)); e.target.value=S.set.gap; stopAll(); renderAll(); save(); };
   $('#exportBtn').onclick=exportMix;
   $('#recBtn').onclick=toggleRec;
@@ -911,7 +1038,62 @@ function wire(){
   $('#splitBtn').onclick=splitAtPlayhead; $('#cutBtn').onclick=deleteSection; $('#undoEditBtn').onclick=restoreTake;
   $('#homeBtn').onclick=()=>{ const was=!!S.play; stopAll(); S.pos=0; setPlayhead(false); $('#tlscroll').scrollLeft=0; if(was) play(0); };
   $('#zoomIn').oninput=e=>{ S.set.zoom=+e.target.value; renderTimeline(); save(); };
+  /* Pointer-based drag-and-drop works on desktop and touch devices. */
+  let drag=null, suppressClipClick=false;
+  const lane=$('#lane'), scroll=$('#tlscroll'), marker=$('#dropMarker');
+  function dragInsertIndex(clientX, draggedKey){
+    const rect=lane.getBoundingClientRect(), x=clientX-rect.left;
+    const remaining=layout().clips.filter(k=>clipKey(k)!==draggedKey);
+    let index=0;
+    for(const k of remaining){ if(x>=(k.start+k.d/2)*S.set.zoom) index++; }
+    return Math.min(index,remaining.length);
+  }
+  function showDropIndex(index, draggedKey){
+    const remaining=layout().clips.filter(k=>clipKey(k)!==draggedKey);
+    const x=index<remaining.length?remaining[index].start*S.set.zoom:
+      remaining.length?(remaining[remaining.length-1].start+remaining[remaining.length-1].d)*S.set.zoom:0;
+    marker.style.left=x+'px'; marker.style.display='block';
+  }
+  lane.addEventListener('pointerdown',e=>{
+    const el=e.target.closest('.clip');
+    if(!el||e.button!==0||S.rec!=='idle'||S.finishing) return;
+    const k=layout().clips.find(x=>x.i===+el.dataset.i&&x.segId===el.dataset.seg&&x.tk.id===el.dataset.take);
+    if(!k)return;
+    drag={pointerId:e.pointerId,el,key:clipKey(k),startX:e.clientX,startY:e.clientY,moved:false,index:0};
+    el.setPointerCapture(e.pointerId);
+  });
+  lane.addEventListener('pointermove',e=>{
+    if(!drag||e.pointerId!==drag.pointerId)return;
+    if(!drag.moved&&Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)<7)return;
+    if(!drag.moved){
+      drag.moved=true; stopAll(); drag.el.classList.add('dragging');scroll.classList.add('drag-active');
+    }
+    e.preventDefault();
+    const r=scroll.getBoundingClientRect();
+    if(e.clientX>r.right-25)scroll.scrollLeft+=16;
+    if(e.clientX<r.left+25)scroll.scrollLeft-=16;
+    drag.index=dragInsertIndex(e.clientX,drag.key);
+    showDropIndex(drag.index,drag.key);
+  });
+  function endDrag(e,commit){
+    if(!drag||e.pointerId!==drag.pointerId)return;
+    const d=drag;drag=null;
+    try{d.el.releasePointerCapture(e.pointerId);}catch(_e){}
+    d.el.classList.remove('dragging');scroll.classList.remove('drag-active');marker.style.display='none';
+    if(!d.moved)return;
+    suppressClipClick=true;
+    if(commit){
+      const order=S.timelineOrder.filter(key=>key!==d.key);
+      order.splice(d.index,0,d.key); S.timelineOrder=order;
+      const current=layout().clips.find(k=>clipKey(k)===d.key);
+      if(current){S.cur=current.i;S.selectedSeg=`${current.i}:${current.tk.id}:${current.segId}`;S.pos=current.start;}
+      renderAll();save();setErr('Clip moved. Playback and WAV export will follow the new order.',true);
+    }
+  }
+  lane.addEventListener('pointerup',e=>endDrag(e,true));
+  lane.addEventListener('pointercancel',e=>endDrag(e,false));
   $('#lane').addEventListener('click',e=>{
+    if(suppressClipClick){suppressClipClick=false;return;}
     const rect=$('#lane').getBoundingClientRect(); const t=Math.max(0,(e.clientX-rect.left)/S.set.zoom);
     const clip=e.target.closest('.clip');
     if(clip&&S.rec==='idle'){
@@ -934,11 +1116,11 @@ function wire(){
     else if(e.key==='l'||e.key==='L') listen();
     else if(e.key==='p'||e.key==='P') togglePlay();
   });
-  window.addEventListener('resize',()=>renderTimeline());
+  window.addEventListener('resize',()=>{renderTimeline();queuePrompterFit();});
 }
 function syncControls(){
   $('#countSel').value=String(S.set.count); $('#autoChk').checked=S.set.auto; $('#trimChk').checked=S.set.trim;
-  $('#gapIn').value=S.set.gap; $('#zoomIn').value=S.set.zoom;
+  $('#gapIn').value=S.set.gap; $('#zoomIn').value=S.set.zoom; $('#noiseChk').checked=S.set.noise;
   const ls=$('#langSel'); ls.innerHTML='';
   LANGS.forEach(([v,n])=>{ const o=document.createElement('option'); o.value=v; o.textContent=n; ls.appendChild(o); });
   ls.value=S.set.lang;
