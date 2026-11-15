@@ -6,7 +6,7 @@
 <title>Takeline — Studio Dark</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;500&display=swap">
 <style>
 /* Layout: script list left, big prompter right, one shared timeline along the bottom. */
 :root{
@@ -24,6 +24,8 @@ body{background:var(--ink);color:var(--text);font:14px/1.45 var(--sans);display:
 button,select,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.line:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.btn:focus-within{outline:2px solid #9debc8;outline-offset:3px}
 .btn{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 12px;line-height:1.2}
 .btn:hover:not(:disabled){border-color:#454b55}
 .btn:disabled{opacity:.4;cursor:default}
@@ -71,8 +73,9 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
 .lbl{font:400 12px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:none}
 .prompter{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
 .ctx{font:400 19px/1.4 var(--serif);color:#6c7079;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.4em}
-.cur{font-family:var(--serif);font-weight:500;line-height:1.32;overflow:auto;min-height:0;max-height:100%;text-wrap:pretty;padding:2px 0;flex:0 1 auto}
-.cur.rec{color:#fff}
+/* Scoped to the prompter: the selected script-list row also carries class "cur". */
+.prompter>.cur{font-family:var(--serif);font-weight:500;line-height:1.32;overflow:auto;min-height:0;max-height:100%;text-wrap:pretty;padding:2px 0;flex:0 1 auto}
+.prompter>.cur.rec{color:#fff}
 .w{transition:color .2s}
 .w.hit{color:var(--teal)}
 .w.miss{color:var(--amber);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.14em}
@@ -162,7 +165,7 @@ main{grid-template-columns:minmax(275px,330px) minmax(0,1fr)}
 .line{padding:12px 10px;margin:3px 5px;border-radius:9px}.line.cur{background:#273740;border-color:#5c8a8d}.line .txt{font-size:13px}.line .st{margin-top:4px}
 .editor{padding:16px;gap:12px}.editor textarea{line-height:1.65;border-radius:10px;padding:13px}
 .stage{padding:18px 28px;gap:12px}.stage-heading{justify-content:space-between;flex-wrap:wrap}.lbl{background:var(--panel2);padding:6px 10px;border-radius:7px;letter-spacing:0;font-size:11px}
-.prompter{padding:15px 4px;gap:20px}.ctx{color:#82909c;font-size:18px}.cur{max-width:980px;line-height:1.4}
+.prompter{padding:15px 4px;gap:20px}.ctx{color:#82909c;font-size:18px}.prompter>.cur{max-width:980px;line-height:1.4}
 .controls{border-top:1px solid var(--line);padding:17px 0 3px;gap:14px 18px;justify-content:space-between}
 .group{gap:7px;flex-wrap:wrap}.recwrap{padding:5px 12px 5px 5px;border-radius:40px;background:#242c35;border:1px solid #3e4b58}
 .recbtn{width:58px;height:58px;border-width:2px;background:#35272a}.recbtn:hover{background:#493034}.rectxt{min-width:105px}.rectxt strong{font-size:14px}.meter{height:7px;width:105px}
@@ -297,7 +300,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .lbl{background:rgba(231,241,254,.78);color:#48749f;border:1px solid rgba(179,207,240,.50)}
 .prompter .ctx{color:#8596ab;opacity:.78}
 .prompter .cur{color:#23354b;letter-spacing:-.012em}
-.cur.rec{color:#10283e}
+.prompter>.cur.rec{color:#10283e}
 .w.hit{color:#1688a2}
 .w.miss{color:#c98618}
 .controls{border-top-color:rgba(191,206,228,.60)}
@@ -373,7 +376,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .line{color:#d6e5f5}.line:hover{background:rgba(47,68,94,.56)}.line.cur{background:linear-gradient(115deg,#243b55,#1c3049);border-color:#4875a8;box-shadow:0 2px 13px rgba(0,0,0,.15)}.line .num,.line .st{color:#a1b3cb}.line.has .st i{background:#48d2a1;border-color:#48d2a1}
 .editor textarea{background:rgba(12,19,29,.90);color:#e6f0fc;border-color:#3b5069;box-shadow:inset 0 1px 4px rgba(0,0,0,.22)}.hint{color:#a3b5cb}
 .lbl{background:rgba(36,54,76,.80);color:#afd2fc;border:1px solid rgba(91,132,179,.35)}
-.prompter .ctx{color:#8fa3bd;opacity:.84}.prompter .cur{color:#f1f5fc}.cur.rec{color:#fff}.w.hit{color:#64ddc8}.w.miss{color:#ffc16e}
+.prompter .ctx{color:#8fa3bd;opacity:.84}.prompter .cur{color:#f1f5fc}.prompter>.cur.rec{color:#fff}.w.hit{color:#64ddc8}.w.miss{color:#ffc16e}
 .controls{border-top-color:rgba(127,158,196,.22)}
 .recwrap{background:linear-gradient(120deg,rgba(42,54,72,.94),rgba(28,37,52,.87));border:1px solid #394c65;box-shadow:0 2px 10px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.07)}
 .recbtn{background:linear-gradient(145deg,#3b2933,#472932);border-color:#c87c8e;box-shadow:0 2px 8px rgba(0,0,0,.28)}.recbtn:hover{background:#57313f}.recbtn.rec{border-color:#ff6674;box-shadow:0 0 0 4px rgba(255,95,113,.14)}.recbtn .dot{background:#ff6674}
@@ -423,7 +426,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .line{border-radius:13px;color:#e4e5f5}.line:hover{background:#343950}.line.cur{background:linear-gradient(145deg,#4c4b71,#343b60);border-color:#817dc1;box-shadow:4px 5px 12px #090e1e8a,inset 2px 2px 3px #ffffff1e}.line .num,.line .st{color:#b9bedb}.line.has .st i{background:#77dcb8;border-color:#77dcb8}
 .editor textarea{background:#1c2032;color:#f1edff;border:1px solid #4e5476;border-radius:15px;box-shadow:inset 5px 5px 12px #0c1021b8,inset -3px -3px 8px #5f668426}.hint{color:#b8bdd5}
 .lbl{background:linear-gradient(145deg,#444665,#303651);color:#dcd3ff;border:1px solid #65658f;border-radius:12px;box-shadow:3px 4px 9px #090c1b77,inset 1px 2px 2px #ffffff1b}
-.prompter .ctx{color:#919ab9;opacity:.95}.prompter .cur{color:#f9f7ff}.cur.rec{color:#fff}.w.hit{color:#8cf1ce}.w.miss{color:#ffd28d}
+.prompter .ctx{color:#919ab9;opacity:.95}.prompter .cur{color:#f9f7ff}.prompter>.cur.rec{color:#fff}.w.hit{color:#8cf1ce}.w.miss{color:#ffd28d}
 .controls{border-top-color:#414761}
 .recwrap{background:linear-gradient(145deg,#363b52,#272d43);border:1px solid #565c79;border-radius:17px;box-shadow:5px 6px 13px #080d1c99,-2px -2px 7px #646b8933,inset 2px 2px 3px #ffffff1a}
 .recbtn{background:linear-gradient(145deg,#6d435b,#4a2d47);border-color:#ff99ac;box-shadow:4px 5px 11px #100e21ad,-2px -2px 6px #b7758d51,inset 2px 2px 3px #ffffff37}.recbtn:hover{background:linear-gradient(145deg,#895169,#623c54)}.recbtn.rec{border-color:#ff86a0;box-shadow:0 0 0 4px #ff7b981f,4px 4px 10px #0f1024}.recbtn .dot{background:#ff7897}
@@ -502,7 +505,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .lbl{color:#9ae5c6;background:#283731;border:1px solid #3e6255;border-radius:9px;box-shadow:none;font-weight:650;letter-spacing:.03em}
 .prompter .ctx{color:#8795a7;opacity:.83}
 .prompter .cur{color:#f6f7fa;text-shadow:0 1px 0 #080b1260;letter-spacing:-.012em}
-.cur.rec{color:#ffffff}.w.hit{color:#85e5ba}.w.miss{color:#f4c783}
+.prompter>.cur.rec{color:#ffffff}.w.hit{color:#85e5ba}.w.miss{color:#f4c783}
 .controls{border-top:1px solid #35404c}
 .recwrap{background:linear-gradient(155deg,#313945,#222a36);border:1px solid #43505e;border-radius:18px;box-shadow:0 4px 11px #060b1480,inset 0 1px 0 #ffffff17}
 .recbtn{background:linear-gradient(155deg,#5a3742,#412b37);border-color:#f89aa1;box-shadow:0 4px 9px #150b1280,inset 0 2px 0 #ffffff20;transition:transform .15s,background .15s}
@@ -643,7 +646,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
           <div class="settings-section-content">
          <label><input type="checkbox" id="enhanceChk"> Enhance voice on playback and export</label>
          <label>Noise cleanup <select id="noiseStrength"><option value="gentle">Gentle · natural</option><option value="strong">Strong · more reduction</option></select></label>
-         <p class="hint">The green noise button enables browser suppression and cleans recorded takes. Strong mode may slightly affect voice quality. Changes also reprocess existing takes.</p>
+         <label><input type="checkbox" id="browserNsChk"> Also use browser noise suppression while recording</label>
+         <p class="hint">The green noise button turns on offline cleanup of recorded takes. Browser suppression is off by default because stacking it with offline cleanup can sound thin or watery. Strong mode may slightly affect voice quality. Changes also reprocess existing takes.</p>
          <label>Studio Voice preset <select id="enhanceProfile"><option value="natural">Natural · balanced</option><option value="warm">Warm · rich</option><option value="broadcast">Broadcast · polished</option></select></label>
          <button class="btn primary" id="studioApply" type="button">✦ One-click Studio Voice</button>
          <p class="hint">Non-destructive EQ, low-cut filter, gentle compression and peak protection. Original takes remain available.</p>
@@ -654,9 +658,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
           <div class="settings-section-content">
          <label><input type="checkbox" id="readChk"> Check my reading</label>
          <label><input type="checkbox" id="followChk"> Follow My Voice · finish a line when read</label>
-         <p class="hint">Follows recognized words live. When the end of the line is recognized, recording stops after a short pause; with Auto next enabled the prompter advances. Requires browser speech recognition.</p>
+         <p class="hint">Follows recognized words live. When the end of the line is recognized, recording stops after a short pause; with Auto next enabled the prompter advances. Requires browser speech recognition. Note: your browser's speech service may send audio to a cloud provider. Turn this off for confidential scripts.</p>
         <label>Speech language <select id="langSel"></select></label>
-        <p class="hint">Browser noise suppression applies to new recordings; offline cleanup also applies to saved takes. Your takes stay in this browser.</p>
+        <p class="hint">Offline cleanup also applies to saved takes. Your recordings and script are stored in this browser only (the reading check is the exception noted above).</p>
           </div>
         </details>
       </div>
@@ -678,7 +682,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
       <div class="row">
         <button class="btn primary" id="applyBtn" type="button">Apply script</button>
         <label class="btn" for="fileIn">Upload PDF / Word / text</label>
-        <input type="file" id="fileIn" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+        <input type="file" id="fileIn" class="sr-only" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
         <button class="btn" id="resetBtn" type="button">Clear everything</button>
       </div>
       <p class="hint" id="scriptMsg" aria-live="polite"></p>
@@ -765,7 +769,8 @@ const S = {
   rec:'idle', recIdx:-1, countLeft:0, stream:null, an:null, anBuf:null, mr:null, chunks:[],
   deviceId:'', pos:0, play:null, level:0, selectedSeg:null, timelineOrder:[],
   liveSt:null, wordEls:[], curKey:'', sp:null, finishing:false, undoStack:[],redoStack:[],followTimer:null,
-  set:{gap:0, trim:true, noise:true, count:2, auto:true, zoom:60, crossfade:0.08,snap:true,font:44, read:true, lang:'en-US',enhance:true,enhanceProfile:'natural',follow:false,noiseStrength:'strong'}
+  /* Defaults: offline cleanup (gentle) only. Browser NS and Studio Voice are opt-in to avoid stacked processing. */
+  set:{gap:0, trim:true, noise:true, count:2, auto:true, zoom:60, crossfade:0.08,snap:true,font:44, read:true, lang:'',enhance:false,enhanceProfile:'natural',follow:false,noiseStrength:'gentle',browserNs:false}
 };
 
 /* ---------- audio context ---------- */
@@ -885,13 +890,21 @@ function partsOf(tk){
   const [a,b]=range(tk);
   return [{id:'whole',a,b}];
 }
+/* Windowed-RMS trim. The threshold follows the take's own noise floor, and the
+   signal must stay above it for ~40 ms, so a keyboard/space-bar thump does not count as speech. */
 function findTrim(buf){
-  const d=buf.getChannelData(0), sr=buf.sampleRate, th=0.012;
-  let a=0,b=d.length-1;
-  while(a<b && Math.abs(d[a])<th) a++;
-  while(b>a && Math.abs(d[b])<th) b--;
-  if(b-a<sr*0.05) return {ts:0,te:buf.duration};
-  return {ts:Math.max(0,a/sr-0.12), te:Math.min(buf.duration,b/sr+0.25)};
+  const d=buf.getChannelData(0), sr=buf.sampleRate, w=Math.max(32,Math.round(sr*.01)), n=Math.floor(d.length/w);
+  if(n<8) return {ts:0,te:buf.duration};
+  const r=new Float32Array(n);
+  for(let k=0;k<n;k++){ let s=0; for(let i=k*w;i<(k+1)*w;i++) s+=d[i]*d[i]; r[k]=Math.sqrt(s/w); }
+  const sorted=Array.from(r).sort((x,y)=>x-y), floor=sorted[Math.floor(n*.1)];
+  const th=Math.max(.008,floor*4), need=4;
+  const sustained=k=>{ for(let j=0;j<need;j++) if((r[k+j]||0)<th) return false; return true; };
+  let a=0,b=n-1;
+  while(a<n-need && !sustained(a)) a++;
+  while(b>a && r[b]<th) b--;
+  if(a>=n-need || (b-a+1)*w<sr*0.05) return {ts:0,te:buf.duration};
+  return {ts:Math.max(0,a*w/sr-0.12), te:Math.min(buf.duration,(b+1)*w/sr+0.25)};
 }
 /* Gentle, non-destructive voice makeup gain for new recordings only.
    Skip near-silent clips; avoid amplifying the noise floor or clipping peaks. */
@@ -912,8 +925,10 @@ function voiceMakeupGain(buf){
   return Math.max(1,Math.min(wanted,0.92/peak));
 }
  /* Offline spectral denoising, independent of browser noise suppression.
-    Uses the quieter frames to estimate stationary background noise, with
-    Hann overlap-add and smoothly attenuated spectral bins. Never mutates tk.buf. */
+    Noise profile: quietest frames, spread across the take (minimum spacing), with a
+    per-bin median so a bit of speech leaking into the estimate cannot dominate it.
+    Gains are smoothed across frequency and time, then applied with Hann overlap-add.
+    Never mutates tk.buf. */
  function fft(re,im,inverse){
    const n=re.length;
    for(let i=1,j=0;i<n;i++){
@@ -936,7 +951,7 @@ function voiceMakeupGain(buf){
    const N=1024,hop=256, half=N>>1,sr=src.sampleRate;
    const out=ctx().createBuffer(src.numberOfChannels,src.length,sr);
    const win=Float64Array.from({length:N},(_,i)=>Math.sin(Math.PI*(i+.5)/N)**2);
-   const factor=strength==='strong'?2.8:1.65, floor=strength==='strong'?.095:.24;
+   const factor=strength==='strong'?2.4:1.65, floor=strength==='strong'?.12:.24;
    for(let ch=0;ch<src.numberOfChannels;ch++){
      const data=src.getChannelData(ch),dst=out.getChannelData(ch);
      const nFrames=Math.max(1,Math.ceil((data.length-N)/hop)+1);
@@ -947,25 +962,51 @@ function voiceMakeupGain(buf){
        candidates.push([e,f]);
      }
      candidates.sort((a,b)=>a[0]-b[0]);
-     const chosen=candidates.slice(0,Math.min(45,Math.max(1,Math.ceil(nFrames*.16))));
-     const noise=new Float64Array(half+1),re=new Float64Array(N),im=new Float64Array(N);
-     for(const [,f] of chosen){const pos=f*hop;
+     // Pick quiet frames that are at least ~1.5 s apart-ish (6 hops min spacing grows with take length)
+     // so the profile samples several places instead of one adjacent run.
+     const want=Math.min(40,Math.max(4,Math.ceil(nFrames*.12))), spacing=Math.max(6,Math.floor(nFrames/(want*3)));
+     const chosen=[];
+     for(const [,f] of candidates){
+       if(chosen.length>=want) break;
+       if(chosen.every(g=>Math.abs(g-f)>=spacing)) chosen.push(f);
+     }
+     if(!chosen.length) chosen.push(candidates[0]?candidates[0][1]:0);
+     const re=new Float64Array(N),im=new Float64Array(N),pw=new Float64Array(half+1);
+     const spectra=[];
+     for(const f of chosen){const pos=f*hop;
        for(let i=0;i<N;i++){re[i]=(data[pos+i]||0)*win[i];im[i]=0;}
        fft(re,im,false);
-       for(let i=0;i<=half;i++)noise[i]+=(re[i]*re[i]+im[i]*im[i])/chosen.length;
+       const sp=new Float32Array(half+1);
+       for(let i=0;i<=half;i++)sp[i]=re[i]*re[i]+im[i]*im[i];
+       spectra.push(sp);
+     }
+     // Per-bin median, scaled by 1/ln2 to approximate the mean power of exponentially distributed noise.
+     const noise=new Float64Array(half+1),col=new Float32Array(spectra.length);
+     for(let i=0;i<=half;i++){
+       for(let s=0;s<spectra.length;s++)col[s]=spectra[s][i];
+       const sorted=Array.from(col).sort((a,b)=>a-b);
+       noise[i]=sorted[Math.floor(sorted.length/2)]*1.44;
      }
      // Smooth spectral floor so isolated bins cannot produce musical noise.
      const sm=noise.slice();for(let i=2;i<half-1;i++)sm[i]=(noise[i-2]+2*noise[i-1]+3*noise[i]+2*noise[i+1]+noise[i+2])/9;
      const prev=new Float64Array(half+1).fill(1), norm=new Float32Array(data.length);
+     const raw=new Float64Array(half+1), sg=new Float64Array(half+1);
      for(let f=0;f<nFrames;f++){
        const pos=f*hop;
        for(let i=0;i<N;i++){re[i]=(data[pos+i]||0)*win[i];im[i]=0;}
        fft(re,im,false);
        for(let i=0;i<=half;i++){
-         const power=re[i]*re[i]+im[i]*im[i];
-         const raw=Math.sqrt(Math.max(floor*floor,1-factor*sm[i]/(power+1e-10)));
+         pw[i]=re[i]*re[i]+im[i]*im[i];
+         raw[i]=Math.sqrt(Math.max(floor*floor,1-factor*sm[i]/(pw[i]+1e-10)));
+       }
+       // Smooth the gain across frequency (3-tap) to reduce isolated-bin "musical noise".
+       for(let i=0;i<=half;i++){
+         const l=raw[i>0?i-1:0],r=raw[i<half?i+1:half];
+         sg[i]=(l+2*raw[i]+r)/4;
+       }
+       for(let i=0;i<=half;i++){
          // Faster noise attenuation, slower release protects syllable tails.
-         const g=raw<prev[i]? .65*prev[i]+.35*raw : .35*prev[i]+.65*raw;
+         const g=sg[i]<prev[i]? .65*prev[i]+.35*sg[i] : .35*prev[i]+.65*sg[i];
          prev[i]=g;re[i]*=g;im[i]*=g;
          if(i>0&&i<half){re[N-i]*=g;im[N-i]*=g;}
        }
@@ -978,6 +1019,12 @@ function voiceMakeupGain(buf){
      for(let i=0;i<data.length;i++)dst[i]/=norm[i]>1e-6?norm[i]:1;
    }
    return out;
+ }
+ /* Linkwitz-Riley 4th-order filter (two cascaded Butterworth biquads). LP + HP sum flat, with no notch at the crossover. */
+ function lr4(c,type,f){
+   const a=c.createBiquadFilter(),b=c.createBiquadFilter();
+   a.type=b.type=type;a.frequency.value=b.frequency.value=f;a.Q.value=b.Q.value=Math.SQRT1_2;a.connect(b);
+   return {input:a,output:b};
  }
  async function processVoice(tk,profile){
    if(!tk||!tk.buf)return;
@@ -996,14 +1043,13 @@ function voiceMakeupGain(buf){
           const low=offline.createBiquadFilter();low.type='lowshelf';low.frequency.value=190;low.gain.value=cfg.low;
           const mid=offline.createBiquadFilter();mid.type='peaking';mid.frequency.value=3000;mid.Q.value=.85;mid.gain.value=cfg.mid;
           const comp=offline.createDynamicsCompressor();comp.threshold.value=cfg.threshold;comp.knee.value=12;comp.ratio.value=cfg.ratio;comp.attack.value=.008;comp.release.value=.2;
-          // High-frequency sibilants are split into a separately compressed band.
-          const lowPass=offline.createBiquadFilter();lowPass.type='lowpass';lowPass.frequency.value=5200;lowPass.Q.value=.3;
-          const sibilance=offline.createBiquadFilter();sibilance.type='highpass';sibilance.frequency.value=5200;sibilance.Q.value=.3;
+          // Sibilance is split with a Linkwitz-Riley crossover (sums flat) and compressed separately.
+          const lowBand=lr4(offline,'lowpass',5200),highBand=lr4(offline,'highpass',5200);
           const deess=offline.createDynamicsCompressor();deess.threshold.value=profile==='broadcast'?-36:-30;deess.knee.value=6;deess.ratio.value=profile==='broadcast'?5:3;deess.attack.value=.002;deess.release.value=.09;
           const merge=offline.createGain();merge.gain.value=1;
           node.connect(hp);hp.connect(low);low.connect(mid);mid.connect(comp);
-          comp.connect(lowPass);lowPass.connect(merge);
-          comp.connect(sibilance);sibilance.connect(deess);deess.connect(merge);
+          comp.connect(lowBand.input);lowBand.output.connect(merge);
+          comp.connect(highBand.input);highBand.output.connect(deess);deess.connect(merge);
           merge.connect(offline.destination);
          node.start();source=await offline.startRendering();
        }
@@ -1015,7 +1061,8 @@ function voiceMakeupGain(buf){
      tk.processed=source;
            let sum=0,n=0; const d=source.getChannelData(0);for(let i=0;i<d.length;i+=8){if(Math.abs(d[i])>.025){sum+=d[i]*d[i];n++;}}
       const rms=n?Math.sqrt(sum/n):0;
-      tk.processedGain=(S.set.noise||S.set.enhance)&&peak>.001&&rms>.015?Math.min(2.8,.93/peak,Math.max(.45,.16/rms)):tk.gain||1;
+      // Cap makeup gain at 1.8x: larger boosts also lift whatever residual noise the cleanup left behind.
+      tk.processedGain=(S.set.noise||S.set.enhance)&&peak>.001&&rms>.015?Math.min(1.8,.93/peak,Math.max(.45,.16/rms)):tk.gain||1;
      tk.processSignature=signature;
    }catch(e){if(tk.processGeneration===generation){tk.processed=null;tk.processSignature='';}}
  }
@@ -1023,12 +1070,13 @@ function voiceMakeupGain(buf){
    const sig=(S.set.noise?S.set.noiseStrength:'off')+'|'+(S.set.enhance?S.set.enhanceProfile:'off');
    return tk.processed&&tk.processSignature===sig?{buf:tk.processed,gain:tk.processedGain||1}:{buf:tk.buf,gain:tk.gain||1};
  };
+ const allProcessed=()=>Promise.all(S.paras.flatMap(p=>p.takes.filter(t=>t.buf).map(t=>processVoice(t,S.set.enhanceProfile))));
  let refreshSerial=0;
  async function refreshEnhancement(){
    const serial=++refreshSerial;
    stopAll();
    setErr('Cleaning audio for playback and export…',true);
-   await Promise.all(S.paras.flatMap(p=>p.takes.filter(t=>t.buf).map(t=>processVoice(t,S.set.enhanceProfile))));
+   await allProcessed();
    if(serial!==refreshSerial)return;
    renderAll();setErr(S.set.noise?'Noise cleanup applied after recording, for playback and export. Original audio is preserved.':'Noise cleanup off. Original takes preserved.',true);
  }
@@ -1046,20 +1094,25 @@ function orderedClips(){
     for(const seg of partsOf(tk)) if(seg.b-seg.a>=0.005)
       entries.push({i,tk,segId:seg.id,a:seg.a,d:seg.b-seg.a});
   });
-  const keys=entries.map(clipKey), unique=S.timelineOrder.filter((key,i,arr)=>keys.includes(key)&&arr.indexOf(key)===i);
-  for(const key of keys) if(!unique.includes(key)) unique.push(key);
+  const keys=entries.map(clipKey), keySet=new Set(keys), seen=new Set(), unique=[];
+  for(const key of S.timelineOrder) if(keySet.has(key)&&!seen.has(key)){ seen.add(key); unique.push(key); }
+  for(const key of keys) if(!seen.has(key)){ seen.add(key); unique.push(key); }
   S.timelineOrder=unique;
   const byKey=new Map(entries.map(k=>[clipKey(k),k]));
   return unique.map(key=>byKey.get(key)).filter(Boolean);
 }
+/* Two pieces of the same take that were split apart are "contiguous": they must play back-to-back
+   with no overlap and no fade, otherwise a split would delete audio and dip the level. */
+const isContiguous=(prev,k)=>!!prev&&prev.tk===k.tk&&Math.abs(prev.a+prev.d-k.a)<1e-4;
 function layout(){
-  const clips=[]; let t=0, lastLine=-1;
+  const clips=[]; let t=0;
   for(const k of orderedClips()){
-    if(lastLine>=0){
-       if(S.set.gap>0&&lastLine!==k.i)t+=S.set.gap;
-       else t-=Math.min(S.set.crossfade||0,k.d/2,clips[clips.length-1].d/2);
-     }
-     clips.push({...k,start:t}); t+=k.d; lastLine=k.i;
+    const prev=clips[clips.length-1];
+    if(prev && !isContiguous(prev,k)){
+      if(S.set.gap>0&&prev.i!==k.i) t+=S.set.gap;
+      else t-=Math.min(S.set.crossfade||0,k.d/2,prev.d/2);
+    }
+    clips.push({...k,start:t}); t+=k.d;
   }
   return {clips,total:t};
 }
@@ -1083,15 +1136,21 @@ function updateEditBtns(){
      $('#undoEditBtn').disabled=!editable||!tk||!Array.isArray(tk.parts);
    $('#clipGain').disabled=!editable||!k;
 }
+ /* Snapshots are keyed by take id (not array index), so deleting or adding takes
+    between an edit and an undo cannot apply old edits to the wrong take. */
  function snapshotTimeline(){
-   return {order:S.timelineOrder.slice(),cur:S.cur,pos:S.pos,selected:S.selectedSeg,
-     edits:S.paras.map(p=>p.takes.map(t=>t.parts?t.parts.map(part=>({...part})):null)),gains:S.paras.map(p=>p.takes.map(t=>t.clipGain||0))};
+   const edits={},gains={};
+   S.paras.forEach(p=>p.takes.forEach(t=>{edits[t.id]=t.parts?t.parts.map(part=>({...part})):null;gains[t.id]=t.clipGain||0;}));
+   return {order:S.timelineOrder.slice(),cur:S.cur,pos:S.pos,selected:S.selectedSeg,edits,gains};
  }
  function checkpoint(){S.undoStack.push(snapshotTimeline());if(S.undoStack.length>60)S.undoStack.shift();S.redoStack=[];}
  function applySnapshot(snap){
    stopAll();S.timelineOrder=snap.order.slice();S.cur=Math.min(snap.cur,Math.max(0,S.paras.length-1));
-   S.paras.forEach((p,i)=>p.takes.forEach((tk,j)=>{
-     const parts=snap.edits[i]?.[j];if(parts)tk.parts=parts.map(part=>({...part}));else delete tk.parts; tk.clipGain=snap.gains?.[i]?.[j]||0;
+   S.paras.forEach(p=>p.takes.forEach(tk=>{
+     if(!(tk.id in snap.edits))return;
+     const parts=snap.edits[tk.id];
+     if(parts)tk.parts=parts.map(part=>({...part}));else delete tk.parts;
+     tk.clipGain=snap.gains[tk.id]||0;
    }));
    S.pos=Math.min(snap.pos,layout().total);S.selectedSeg=snap.selected;renderAll();save();
  }
@@ -1153,7 +1212,9 @@ function setMicReady(ready){
 async function ensureMic(){
   if(S.stream && S.stream.active) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw new Error('nomd');
-  const c={echoCancellation:S.set.noise,noiseSuppression:S.set.noise,autoGainControl:false};
+  /* Echo cancellation is never useful for a single-source voice recording and can gate or duck the voice,
+     so it is always off. Browser noise suppression is opt-in; offline cleanup is the default. */
+  const c={echoCancellation:false,noiseSuppression:!!S.set.browserNs,autoGainControl:false,channelCount:1};
   if(S.deviceId) c.deviceId={exact:S.deviceId};
   S.stream=await navigator.mediaDevices.getUserMedia({audio:c});
   const ac=ctx(); const src=ac.createMediaStreamSource(S.stream);
@@ -1161,7 +1222,7 @@ async function ensureMic(){
   setMicReady(true);
   await refreshDevices();
   const settings=S.stream.getAudioTracks()[0]?.getSettings?.()||{};
-  if(S.set.noise && settings.noiseSuppression===false) setErr('Noise reduction is requested, but this microphone/browser does not support it.','warn');
+  if(S.set.browserNs && settings.noiseSuppression===false) setErr('Browser noise suppression is requested, but this microphone/browser does not support it.','warn');
 }
 async function refreshDevices(){
   try{
@@ -1184,7 +1245,7 @@ function setErr(t,kind){ const e=$('#err'); e.textContent=t||''; e.classList.tog
 /* ---------- reading check (speech recognition) ---------- */
 const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
 const LANGS=[['','Auto (browser language)'],['en-US','English (US)'],['en-GB','English (UK)'],['tr-TR','Türkçe'],['de-DE','Deutsch'],['fr-FR','Français'],['es-ES','Español'],['it-IT','Italiano'],['pt-BR','Português (Brasil)'],['nl-NL','Nederlands'],['ru-RU','Русский']];
-const speechLang=()=>S.set.lang||'en-US';
+const speechLang=()=>S.set.lang||navigator.language||'en-US';
 const tokensOf=t=>t.split(/\s+/).filter(Boolean);
 const nrm=(s,l)=>{ try{ return s.toLocaleLowerCase(l).normalize('NFC').replace(/[^\p{L}\p{N}]+/gu,''); }catch(e){ return s.toLowerCase().replace(/[^a-z0-9]+/g,''); } };
 function lev(a,b){
@@ -1312,7 +1373,14 @@ async function toggleRec(){
 }
 function beginRec(){
   const mime=pickMime();
-  let mr; try{ mr=new MediaRecorder(S.stream,mime?{mimeType:mime}:undefined); }catch(e){ S.rec='idle'; setErr('This browser cannot record audio.'); updateStage(); return; }
+  let mr; try{
+    // Explicit bitrate: the default Opus rate is low, and cleanup works on this already-lossy audio.
+    const opts={audioBitsPerSecond:192000}; if(mime) opts.mimeType=mime;
+    mr=new MediaRecorder(S.stream,opts);
+  }catch(e){
+    try{ mr=new MediaRecorder(S.stream,mime?{mimeType:mime}:undefined); }
+    catch(e2){ S.rec='idle'; setErr('This browser cannot record audio.'); updateStage(); return; }
+  }
   S.chunks=[]; mr.ondataavailable=e=>{ if(e.data&&e.data.size) S.chunks.push(e.data); };
   mr.onstop=onRecStop; mr.start(250); S.mr=mr; S.rec='rec'; S.t0=performance.now();
   startSpeech();
@@ -1361,21 +1429,46 @@ function stepTake(d){
 }
 
 /* ---------- playback ---------- */
+/* Per-clip fade lengths.
+   - Contiguous pieces of one take (a split): no fade at all, so the cut is seamless.
+   - Overlapping clips (crossfade): the overlap length, with equal-power curves.
+   - Otherwise: a 12 ms declick fade. */
 function clipEnvelope(clips,index){
- const k=clips[index],prev=clips[index-1],next=clips[index+1];
- return {fadeIn:prev?Math.max(.008,Math.min(.012,k.d/3,k.start-(prev.start+prev.d)<0?(prev.start+prev.d-k.start):.012)):.012,
- fadeOut:next?Math.max(.008,Math.min(.012,k.d/3,k.start+k.d-next.start>0?(k.start+k.d-next.start):.012)):.012,
- overlapIn:prev?Math.max(0,prev.start+prev.d-k.start):0, overlapOut:next?Math.max(0,k.start+k.d-next.start):0};
+  const k=clips[index],prev=clips[index-1],next=clips[index+1],dflt=.012,cap=k.d/2;
+  let inLen=dflt,outLen=dflt,inOv=false,outOv=false;
+  if(prev){
+    if(isContiguous(prev,k)) inLen=0;
+    else{ const ov=prev.start+prev.d-k.start; if(ov>.001){ inLen=ov; inOv=true; } }
+  }
+  if(next){
+    if(isContiguous(k,next)) outLen=0;
+    else{ const ov=k.start+k.d-next.start; if(ov>.001){ outLen=ov; outOv=true; } }
+  }
+  return {inLen:Math.min(inLen,cap),outLen:Math.min(outLen,cap),inOv,outOv};
 }
 function sampleEnvelope(local,d,env){
- let g=1;
- const fadeIn=Math.max(.006,env.overlapIn||env.fadeIn),fadeOut=Math.max(.006,env.overlapOut||env.fadeOut);
- if(local<fadeIn)g*=Math.max(0,local/fadeIn);
- if(d-local<fadeOut)g*=Math.max(0,(d-local)/fadeOut);
- return g;
+  let g=1;
+  if(env.inLen>0&&local<env.inLen){ const x=Math.max(0,local/env.inLen); g*=env.inOv?Math.sin(x*Math.PI/2):x; }
+  if(env.outLen>0&&d-local<env.outLen){ const x=Math.max(0,(d-local)/env.outLen); g*=env.outOv?Math.sin(x*Math.PI/2):x; }
+  return g;
 }
 function dbGain(db){return Math.pow(10,(db||0)/20);}
 function syncClipGain(){const k=selectedClip(),v=k?(k.tk.clipGain||0):0;$('#clipGain').value=v;$('#clipGainLabel').textContent=(v>0?'+':'')+v+' dB';}
+/* Schedules a clip's gain: constant in the middle, smooth curves only across the fade regions. */
+function scheduleGain(param,gain,k,env,s,e,t0,base){
+  const l0=s-k.start,l1=e-k.start,when=base+(s-t0);
+  param.value=gain*sampleEnvelope(l0,k.d,env);
+  const ramp=(la,lb)=>{
+    if(lb-la<.002) return;
+    const n=Math.min(256,Math.max(8,Math.ceil((lb-la)/.002))),arr=new Float32Array(n);
+    for(let j=0;j<n;j++) arr[j]=gain*sampleEnvelope(la+(lb-la)*j/(n-1),k.d,env);
+    try{ param.setValueCurveAtTime(arr,when+(la-l0),lb-la); }catch(_e){}
+  };
+  let inEnd=0;
+  if(env.inLen>0&&l0<env.inLen){ inEnd=Math.min(l1,env.inLen); ramp(l0,inEnd); }
+  const outStart=Math.max(l0,k.d-env.outLen,inEnd+.001);
+  if(env.outLen>0&&outStart<l1) ramp(outStart,l1);
+}
 function play(t0,endT){
   stopAll(true);
   const {clips,total}=layout(); if(!clips.length) return;
@@ -1383,14 +1476,13 @@ function play(t0,endT){
   if(endT===undefined||endT>total) endT=total;
   if(t0>=endT) t0=0;
   const base=c.currentTime+0.06, nodes=[];
-     for(const [index,k] of clips.entries()){
-     const s=Math.max(k.start,t0), e=Math.min(k.start+k.d,endT);
+  for(const [index,k] of clips.entries()){
+    const s=Math.max(k.start,t0), e=Math.min(k.start+k.d,endT);
     if(e-s<=0.001) continue;
-     const src=c.createBufferSource(); const audio=audioOf(k.tk);src.buffer=audio.buf;
-           const makeup=c.createGain();const env=clipEnvelope(clips,index), gain=audio.gain*dbGain(k.tk.clipGain);
-      src.connect(makeup);makeup.connect(c.destination);
-      const duration=e-s,steps=Math.max(2,Math.ceil(duration/.012));
-      for(let j=0;j<=steps;j++){const local=s-k.start+duration*j/steps;makeup.gain.setValueAtTime(gain*sampleEnvelope(local,k.d,env),base+s-t0+duration*j/steps);}
+    const src=c.createBufferSource(); const audio=audioOf(k.tk);src.buffer=audio.buf;
+    const makeup=c.createGain();const env=clipEnvelope(clips,index), gain=audio.gain*dbGain(k.tk.clipGain);
+    src.connect(makeup);makeup.connect(c.destination);
+    scheduleGain(makeup.gain,gain,k,env,s,e,t0,base);
     src.start(base+(s-t0), k.a+(s-k.start), e-s); nodes.push(src);
   }
   S.play={base,t0,end:endT,nodes}; S.pos=t0; updatePlayBtn(); requestAnimationFrame(loop);
@@ -1412,10 +1504,11 @@ function togglePlay(){
   if(S.play){ stopAll(); return; }
   const {total}=layout(); play(S.pos>=total?0:S.pos);
 }
+/* Listen plays every piece of the selected line (after a split there can be several). */
 function listen(){
   if(S.rec!=='idle') return;
-  const k=layout().clips.find(c=>c.i===S.cur); if(!k) return;
-  play(k.start,k.start+k.d);
+  const ks=layout().clips.filter(c=>c.i===S.cur); if(!ks.length) return;
+  play(Math.min(...ks.map(c=>c.start)),Math.max(...ks.map(c=>c.start+c.d)));
 }
 const PLAY_BUTTON_ICON = '<svg class="action-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5.5 18 12 8 18.5Z" fill="currentColor" stroke="none"/></svg>';
 const PAUSE_BUTTON_ICON = '<svg class="action-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/></svg>';
@@ -1475,8 +1568,11 @@ async function mp3(samples,sr,bitrate){
  const tail=enc.flush();if(tail.length)chunks.push(new Uint8Array(tail));return new Blob(chunks,{type:'audio/mpeg'});
 }
 async function exportMix(){
- const status=$('#exportStatus'),btn=$('#renderExport');btn.disabled=true;status.textContent='Rendering your audio…';
+ const status=$('#exportStatus'),btn=$('#renderExport');btn.disabled=true;status.textContent='Preparing audio…';
  try{
+   // Make sure every take has finished cleanup, otherwise export would silently use the raw audio.
+   await allProcessed();
+   status.textContent='Rendering your audio…';
    const data=masterSamples(renderSamples(),$('#loudnessTarget').value),format=$('#exportFormat').value;
    const blob=format==='mp3'?await mp3(data.out,data.sr,+$('#mp3Quality').value):wav(data.out,data.sr,+$('#wavQuality').value);
    dl(blob,`takeline-studio-mix.${format}`);status.textContent='Export complete.';$('#exportDialog').close();setErr(`Exported ${format.toUpperCase()} with fades and peak protection.`,true);
@@ -1642,21 +1738,21 @@ function setPlayhead(follow){
 
 /* ---------- persistence ---------- */
 function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open('takeline',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
-async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }
+async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); tx.onabort=()=>rej(tx.error); }); }
 async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const r=db.transaction('kv').objectStore('kv').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
 let saveT=null;
 function save(){
   clearTimeout(saveT);
   saveT=setTimeout(()=>{
     const data={cur:S.cur,set:S.set,deviceId:S.deviceId,timelineOrder:S.timelineOrder,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,gain:t.gain||1,clipGain:t.clipGain||0,words:t.words||null,parts:t.parts||null}))}))};
-    idbSet('project',data).catch(()=>{});
+    idbSet('project',data).catch(()=>setErr('Could not save your project in this browser (storage may be full or blocked). Export your audio to avoid losing work.','warn'));
   },500);
 }
 async function restore(){
   let d=null; try{ d=await idbGet('project'); }catch(e){}
   if(!d||!d.paras){ $('#scriptTa').value=SAMPLE; S.paras=splitScript(SAMPLE).map(t=>({id:uid(),text:t,takes:[],active:-1})); return; }
    S.timelineOrder=Array.isArray(d.timelineOrder)?d.timelineOrder:[];
-  Object.assign(S.set,d.set||{}); if(typeof S.set.noise!=='boolean') S.set.noise=true; if(!S.set.lang) S.set.lang='en-US'; if(!['gentle','strong'].includes(S.set.noiseStrength))S.set.noiseStrength='strong'; if(S.set.enhanceProfile==='presence')S.set.enhanceProfile='broadcast'; S.deviceId=d.deviceId||'';
+  Object.assign(S.set,d.set||{}); if(typeof S.set.noise!=='boolean') S.set.noise=true; if(typeof S.set.lang!=='string') S.set.lang=''; if(!['gentle','strong'].includes(S.set.noiseStrength))S.set.noiseStrength='gentle'; if(typeof S.set.browserNs!=='boolean')S.set.browserNs=false; if(S.set.enhanceProfile==='presence')S.set.enhanceProfile='broadcast'; S.deviceId=d.deviceId||'';
   for(const p of d.paras){
     const np={id:p.id,text:p.text,takes:[],active:-1};
     for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.gain=t.gain||1;tk.clipGain=t.clipGain||0; tk.words=t.words||null; if(Array.isArray(t.parts))tk.parts=t.parts; np.takes.push(tk); if(S.set.noise||S.set.enhance) await processVoice(tk,S.set.enhanceProfile); }catch(e){} }
@@ -1707,20 +1803,23 @@ function wire(){
   $('#noiseStrength').onchange=e=>{S.set.noiseStrength=e.target.value;save();refreshEnhancement();};
   $('#enhanceChk').onchange=e=>{S.set.enhance=e.target.checked;save();refreshEnhancement();};
   $('#enhanceProfile').onchange=e=>{S.set.enhanceProfile=e.target.value;save();refreshEnhancement();};
+  $('#browserNsChk').onchange=async e=>{
+    if(S.rec!=='idle'||S.finishing){ e.target.checked=!!S.set.browserNs; return; }
+    S.set.browserNs=e.target.checked; save();
+    if(S.stream){
+      S.stream.getTracks().forEach(t=>t.stop()); S.stream=null; S.an=null; setMicReady(false);
+      try{ await ensureMic(); if(!$('#err').textContent.includes('does not support')) setErr(S.set.browserNs?'Browser noise suppression on for new recordings.':'Browser noise suppression off for new recordings.',true); }
+      catch(err){ setErr(micError(err)); }
+    } else setErr(S.set.browserNs?'Browser noise suppression will apply to new recordings.':'Browser noise suppression is off.',true);
+  };
   $('#langSel').onchange=e=>{ S.set.lang=e.target.value; save(); };
   $('#autoChk').onchange=e=>{ S.set.auto=e.target.checked; save(); };
   $('#trimChk').onchange=e=>{ S.set.trim=e.target.checked; stopAll(); renderAll(); save(); };
   $('#noiseBtn').onclick=()=>{ if(!$('#noiseBtn').disabled) $('#noiseChk').click(); };
-  $('#noiseChk').onchange=async e=>{
+  $('#noiseChk').onchange=e=>{
     syncNoiseButton();
-    if(S.rec!=='idle'||S.finishing){ e.target.checked=S.set.noise; return; }
+    if(S.rec!=='idle'||S.finishing){ e.target.checked=S.set.noise; syncNoiseButton(); return; }
     S.set.noise=e.target.checked; save(); refreshEnhancement();
-    if(S.stream){
-      S.stream.getTracks().forEach(t=>t.stop()); S.stream=null; S.an=null;
-      setMicReady(false);
-      try{ await ensureMic(); if(!$('#err').textContent.includes('does not support')) setErr(S.set.noise?'Noise reduction enabled for new recordings.':'Noise reduction disabled for new recordings.',true); }
-      catch(err){ setErr(micError(err)); }
-    } else setErr(S.set.noise?'Noise reduction will apply to new recordings.':'Noise reduction is off for new recordings.',true);
   }; 
   $('#gapIn').onchange=e=>{ S.set.gap=Math.min(5,Math.max(0,+e.target.value||0)); e.target.value=S.set.gap; stopAll(); renderAll(); save(); };
   $('#exportBtn').onclick=()=>$('#exportDialog').showModal();
@@ -1832,6 +1931,9 @@ function wire(){
   document.addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&e.detail>0) b.blur(); });
   document.addEventListener('keydown',e=>{
     const t=e.target; if(t.matches&&t.matches('textarea,input,select')) return;
+    // Do not trigger recording/editing shortcuts while the export dialog is open or while using the settings menu.
+    if($('#exportDialog').open) return;
+    if(t.closest&&t.closest('.settings-menu')) return;
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redoTimeline();else undoTimeline();return;}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redoTimeline();return;}
     if(e.metaKey||e.ctrlKey||e.altKey) return;
@@ -1849,12 +1951,12 @@ function syncNoiseButton(){
   const active=$('#noiseChk').checked, b=$('#noiseBtn');
   b.classList.toggle('is-active',active);
   b.setAttribute('aria-pressed',String(active));
-  b.title=active?'Noise reduction on':'Noise reduction off';
-  b.setAttribute('aria-label',active?'Turn off noise reduction':'Turn on noise reduction');
+  b.title=active?'Noise cleanup on':'Noise cleanup off';
+  b.setAttribute('aria-label',active?'Turn off noise cleanup':'Turn on noise cleanup');
 }
 function syncControls(){
   $('#countSel').value=String(S.set.count); $('#autoChk').checked=S.set.auto; $('#trimChk').checked=S.set.trim;
-  $('#noiseStrength').value=S.set.noiseStrength;$('#enhanceChk').checked=!!S.set.enhance;$('#enhanceProfile').value=S.set.enhanceProfile;$('#followChk').checked=!!S.set.follow;
+  $('#noiseStrength').value=S.set.noiseStrength;$('#enhanceChk').checked=!!S.set.enhance;$('#enhanceProfile').value=S.set.enhanceProfile;$('#followChk').checked=!!S.set.follow;$('#browserNsChk').checked=!!S.set.browserNs;
   $('#gapIn').value=S.set.gap; $('#zoomIn').value=S.set.zoom;$('#crossfadeIn').value=Math.round((S.set.crossfade||0)*1000);$('#crossfadeLabel').textContent=Math.round((S.set.crossfade||0)*1000)+' ms';$('#snapChk').checked=S.set.snap!==false; $('#noiseChk').checked=S.set.noise; syncNoiseButton();
   const ls=$('#langSel'); ls.innerHTML='';
   LANGS.forEach(([v,n])=>{ const o=document.createElement('option'); o.value=v; o.textContent=n; ls.appendChild(o); });
@@ -1869,6 +1971,7 @@ function syncControls(){
   S.scriptText=$('#scriptTa').value;
   if(!SR) S.set.read=false;
   syncControls(); updateApplyBtn(); renderAll(); meterLoop();
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
   if(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices) refreshDevices();
   const anyTake=S.paras.some(p=>p.takes.length);
   setErr(anyTake?'':(SR?'Press Record (or Space) to start. Words turn teal as you say them and amber if you skip them.':'Press Record (or Space) to start. The reading check needs Chrome, Edge or Safari, so words will not be colored in this browser.'),true);
