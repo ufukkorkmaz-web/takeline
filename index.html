@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Takeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;500&display=swap">
+<style>
+/* Layout: script list left, big prompter right, one shared timeline along the bottom. */
+:root{
+  --ink:#111214; --panel:#181a1e; --panel2:#1f2227; --line:#2c3037;
+  --text:#ece9e2; --muted:#8c919b; --rec:#ff4a3a; --ok:#62d28f; --amber:#f3b94d;
+  --clip:#25414d; --wave:#86c8dc; --teal:#3ccfc0;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --serif:Newsreader,Georgia,"Times New Roman",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--ink);color:var(--text);font:14px/1.45 var(--sans);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.line:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 12px;line-height:1.2}
+.btn:hover:not(:disabled){border-color:#454b55}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.primary{background:var(--text);color:var(--ink);border-color:var(--text);font-weight:500}
+.btn.warn{border-color:var(--rec);color:var(--rec)}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{font:500 15px var(--mono);letter-spacing:.06em}
+.stats{font:400 12px var(--mono);color:var(--muted);flex:1 1 220px;min-width:0}
+.stats b{color:var(--text);font-weight:500}
+.opts{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:12px;color:var(--muted)}
+.opts label{display:flex;align-items:center;gap:6px}
+.opts select,.opts input[type=number]{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:3px 6px}
+.opts input[type=number]{width:58px}
+.opts select{max-width:170px}
+
+/* main */
+main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-height:0}
+.script{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:var(--panel)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:10px;color:var(--muted)}
+.tabs button[aria-selected=true]{color:var(--text);border-bottom-color:var(--amber)}
+#list{list-style:none;margin:0;padding:6px;overflow:auto;flex:1;min-height:0}
+.line{display:grid;grid-template-columns:26px minmax(0,1fr);gap:2px 8px;padding:9px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+.line:hover{background:var(--panel2)}
+.line.cur{background:var(--panel2);border-color:#3a3f48}
+.line .num{font:500 12px var(--mono);color:var(--muted);padding-top:2px}
+.line .txt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13px}
+.line .st{grid-column:2;font:400 11px var(--mono);color:var(--muted);display:flex;align-items:center;gap:6px}
+.line .st i{width:7px;height:7px;border-radius:50%;border:1px solid var(--muted);display:inline-block}
+.line.has .st i{background:var(--ok);border-color:var(--ok)}
+.line.live .st i{background:var(--rec);border-color:var(--rec);animation:pulse 1s infinite}
+.empty{color:var(--muted);padding:16px;font-size:13px}
+.editor{display:none;flex-direction:column;gap:10px;padding:12px;flex:1;min-height:0;overflow:auto}
+.editor.on{display:flex}
+#list.off{display:none}
+.editor textarea{flex:1;min-height:160px;resize:none;background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:10px;font:400 13px/1.5 var(--sans)}
+.editor .row{display:flex;flex-wrap:wrap;gap:8px}
+.hint{font-size:12px;color:var(--muted);margin:0}
+.drop{outline:2px dashed var(--amber);outline-offset:-6px}
+
+/* stage */
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0;padding:14px 28px 16px;gap:12px}
+.lbl{font:400 12px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.prompter{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.ctx{font:400 19px/1.4 var(--serif);color:#6c7079;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.4em}
+.cur{font-family:var(--serif);font-weight:500;line-height:1.32;overflow:auto;min-height:0;max-height:100%;text-wrap:pretty;padding:2px 0;flex:0 1 auto}
+.cur.rec{color:#fff}
+.w{transition:color .2s}
+.w.hit{color:var(--teal)}
+.w.miss{color:var(--amber);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.14em}
+.line .st .miss{color:var(--amber)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;padding-top:6px;border-top:1px solid var(--line)}
+.group{display:flex;align-items:center;gap:8px}
+.recwrap{display:flex;align-items:center;gap:14px}
+.recbtn{width:76px;height:76px;border-radius:50%;background:var(--panel2);border:3px solid var(--text);display:grid;place-items:center;padding:0}
+.recbtn .dot{width:30px;height:30px;border-radius:50%;background:var(--rec);transition:border-radius .15s,width .15s,height .15s}
+.recbtn .cnt{display:none;font:500 30px var(--mono)}
+.recbtn.count .dot{display:none}.recbtn.count .cnt{display:block}
+.recbtn.rec{border-color:var(--rec);animation:ring 1.4s infinite}
+.recbtn.rec .dot{border-radius:6px;width:24px;height:24px}
+.rectxt{display:flex;flex-direction:column;gap:2px;min-width:96px}
+.rectxt strong{font-weight:500}
+.rectxt span{font:400 13px var(--mono);color:var(--muted)}
+.meter{width:96px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;width:100%;background:var(--ok);transform-origin:left;transform:scaleX(0)}
+.takenav{font:400 12px var(--mono);color:var(--muted);display:flex;align-items:center;gap:6px}
+.err{min-height:18px;font-size:13px;color:var(--rec);text-align:center}
+.err.info{color:var(--muted)}
+.err.warn{color:var(--amber)}
+.fontctl{display:flex;gap:4px}
+@keyframes pulse{50%{opacity:.35}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(255,74,58,.5)}100%{box-shadow:0 0 0 16px rgba(255,74,58,0)}}
+
+/* timeline */
+.timeline{border-top:1px solid var(--line);background:var(--panel);height:214px;display:flex;flex-direction:column;min-width:0}
+.tltool{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:7px 14px;border-bottom:1px solid var(--line)}
+.time{font:500 15px var(--mono);min-width:86px}
+.time small{color:var(--muted);font-weight:400}
+.zoom{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:12px;color:var(--muted)}
+#tlscroll{flex:1;min-height:0;overflow-x:auto;overflow-y:hidden;position:relative}
+#lane{position:relative;height:100%;min-width:100%;cursor:text}
+.tick{position:absolute;top:0;height:100%;border-left:1px solid #23262c;pointer-events:none}
+.tick span{position:absolute;top:3px;left:5px;font:400 10px var(--mono);color:var(--muted)}
+.clip{position:absolute;top:28px;bottom:14px;background:var(--clip);border:1px solid #35606f;border-radius:5px;overflow:hidden;cursor:pointer}
+.clip.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+.clip canvas{position:absolute;inset:0;width:100%;height:100%}
+.clip .n{position:absolute;top:2px;left:5px;font:500 11px var(--mono);color:#cfe9f1;background:rgba(10,20,25,.6);border-radius:3px;padding:0 4px;z-index:1}
+.clip .tk{position:absolute;top:2px;right:5px;font:400 10px var(--mono);color:#cfe9f1;z-index:1}
+#playhead{position:absolute;top:0;bottom:0;width:0;border-left:2px solid var(--amber);pointer-events:none;z-index:3}
+.tlempty{position:absolute;inset:28px 0 14px;display:grid;place-items:center;color:var(--muted);font-size:13px;pointer-events:none;text-align:center;padding:0 16px}
+
+@media (max-width:860px){
+  body{display:block;overflow:auto;height:auto}
+  html{height:auto}
+  main{display:block}
+  .script{border-right:0;border-bottom:1px solid var(--line);max-height:300px}
+  .stage{padding:14px 16px}
+  .timeline{height:230px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">TAKELINE</div>
+  <div class="stats" id="stats" aria-live="polite"></div>
+  <div class="opts">
+    <button class="btn" id="micBtn" type="button">Enable mic</button>
+    <label>Input <select id="devSel"><option value="">Default microphone</option></select></label>
+    <label>Count-in <select id="countSel"><option value="0">Off</option><option value="2">2 s</option><option value="3">3 s</option></select></label>
+    <label><input type="checkbox" id="autoChk"> Next line after stop</label>
+    <label><input type="checkbox" id="trimChk"> Trim silence</label>
+    <label>Gap <input type="number" id="gapIn" min="0" max="5" step="0.1"> s</label>
+    <label><input type="checkbox" id="readChk"> Check my reading</label>
+    <label>Speech language <select id="langSel"></select></label>
+    <button class="btn primary" id="exportBtn" type="button">Export mix (WAV)</button>
+  </div>
+</header>
+
+<main>
+  <aside class="script">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabLines" aria-selected="true" type="button">Lines</button>
+      <button role="tab" id="tabScript" aria-selected="false" type="button">Script</button>
+    </div>
+    <ul id="list" aria-label="Script lines"></ul>
+    <div class="editor" id="editor">
+      <p class="hint">Type or paste your script. Leave a blank line between paragraphs: each paragraph is one line in the prompter and gets its own take.</p>
+      <textarea id="scriptTa" spellcheck="true" aria-label="Script text"></textarea>
+      <div class="row">
+        <button class="btn primary" id="applyBtn" type="button">Apply script</button>
+        <label class="btn" for="fileIn">Upload PDF / Word / text</label>
+        <input type="file" id="fileIn" accept=".pdf,.docx,.txt,.md,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+        <button class="btn" id="resetBtn" type="button">Clear everything</button>
+      </div>
+      <p class="hint" id="scriptMsg" aria-live="polite"></p>
+      <p class="hint">Old .doc files are not supported; save them as .docx first. Recordings are stored in this browser only.</p>
+    </div>
+  </aside>
+
+  <section class="stage" aria-label="Prompter">
+    <div class="lbl" id="lineLbl"></div>
+    <div class="prompter">
+      <div class="ctx" id="prevCtx"></div>
+      <div class="cur" id="curText"></div>
+      <div class="ctx" id="nextCtx"></div>
+    </div>
+    <div class="err" id="err" role="status"></div>
+    <div class="controls">
+      <div class="group">
+        <button class="btn" id="prevBtn" type="button">&larr; Prev</button>
+        <button class="btn" id="nextBtn" type="button">Next &rarr;</button>
+      </div>
+      <div class="recwrap">
+        <button class="recbtn" id="recBtn" type="button" aria-label="Record"><span class="dot"></span><span class="cnt" id="cnt"></span></button>
+        <div class="rectxt"><strong id="recLbl">Record</strong><span id="recTime">0:00.0</span><div class="meter" aria-hidden="true"><i id="meterBar"></i></div></div>
+      </div>
+      <div class="group">
+        <div class="takenav"><button class="btn" id="tkPrev" type="button" aria-label="Previous take">&lsaquo;</button><span id="tkLbl">No takes</span><button class="btn" id="tkNext" type="button" aria-label="Next take">&rsaquo;</button></div>
+        <button class="btn" id="listenBtn" type="button">Listen</button>
+        <button class="btn" id="saveTkBtn" type="button">Save take</button>
+        <button class="btn warn" id="delTkBtn" type="button">Delete take</button>
+      </div>
+      <div class="group fontctl"><button class="btn" id="fMinus" type="button" aria-label="Smaller text">A&minus;</button><button class="btn" id="fPlus" type="button" aria-label="Larger text">A+</button></div>
+    </div>
+  </section>
+</main>
+
+<section class="timeline" aria-label="Timeline">
+  <div class="tltool">
+    <button class="btn primary" id="playBtn" type="button">Play all</button>
+    <button class="btn" id="homeBtn" type="button">&#9198; Start</button>
+    <div class="time" id="timeLbl">0:00.0 <small>/ 0:00.0</small></div>
+    <div class="zoom">Zoom <input type="range" id="zoomIn" min="20" max="200" step="5" aria-label="Timeline zoom"></div>
+  </div>
+  <div id="tlscroll"><div id="lane"><div id="playhead"></div></div></div>
+</section>
+
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2,9);
+const pad2 = n => String(n).padStart(2,'0');
+function fmt(t){ t=Math.max(0,t||0); const m=Math.floor(t/60); return m+':'+pad2(Math.floor(t%60))+'.'+Math.floor((t*10)%10); }
+
+const SAMPLE = [
+ "Welcome back to the show. I'm your host, and today we're talking about something small that changes everything: how you start your day.",
+ "Before we get into it, a quick thank-you to everyone who wrote in last week. I read every message, and a few of them made it into today's episode.",
+ "Here's the idea. The first ten minutes after you wake up set the tone for the next ten hours. Most of us hand that time to a screen without noticing.",
+ "So for the next thirty minutes we'll look at what a calmer morning looks like, and at what two of our guests do to protect theirs.",
+ "Let's get started."
+].join('\n\n');
+
+const S = {
+  paras:[], cur:0, scriptText:'', tab:'lines', pendingDiscard:0,
+  rec:'idle', recIdx:-1, countLeft:0, stream:null, an:null, anBuf:null, mr:null, chunks:[],
+  deviceId:'', pos:0, play:null, level:0,
+  liveSt:null, wordEls:[], curKey:'', sp:null, finishing:false,
+  set:{gap:0.5, trim:true, count:2, auto:true, zoom:60, font:44, read:true, lang:''}
+};
+
+/* ---------- audio context ---------- */
+let actx=null;
+function ctx(){ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); return actx; }
+
+/* ---------- script parsing ---------- */
+function splitScript(t){
+  t=(t||'').replace(/\r/g,'').trim(); if(!t) return [];
+  const parts = /\n\s*\n/.test(t) ? t.split(/\n\s*\n+/) : t.split(/\n+/);
+  return parts.map(s=>s.replace(/\s*\n\s*/g,' ').replace(/[ \t]+/g,' ').trim()).filter(Boolean);
+}
+function applyScript(force){
+  const texts=splitScript($('#scriptTa').value);
+  S.scriptText=$('#scriptTa').value;
+  const pool=S.paras.slice(), next=[];
+  for(const tx of texts){
+    const i=pool.findIndex(p=>p.text===tx);
+    if(i>=0) next.push(pool.splice(i,1)[0]); else next.push({id:uid(),text:tx,takes:[],active:-1});
+  }
+  const lost=pool.reduce((n,p)=>n+p.takes.length,0);
+  if(lost && !force){ S.pendingDiscard=lost; scriptMsg(`${lost} recorded take${lost>1?'s belong':' belongs'} to lines you changed or removed. Press the button again to discard them.`); updateApplyBtn(); return; }
+  S.pendingDiscard=0; updateApplyBtn();
+  stopAll();
+  S.paras=next; S.cur=Math.min(S.cur,Math.max(0,next.length-1)); S.pos=0;
+  $('#scriptTa').value=next.map(p=>p.text).join('\n\n'); S.scriptText=$('#scriptTa').value;
+  scriptMsg(next.length?`${next.length} line${next.length>1?'s':''} ready. Unchanged lines kept their takes.`:'The script is empty.');
+  renderAll(); save();
+}
+function updateApplyBtn(){ const b=$('#applyBtn'); b.textContent=S.pendingDiscard?`Discard ${S.pendingDiscard} take${S.pendingDiscard>1?'s':''} and apply`:'Apply script'; b.classList.toggle('warn',!!S.pendingDiscard); b.classList.toggle('primary',!S.pendingDiscard); }
+function scriptMsg(t){ $('#scriptMsg').textContent=t||''; }
+
+/* ---------- file import ---------- */
+const URL_PDF='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+const URL_PDFW='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const URL_MAM='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+const loaded={};
+function loadScript(url){
+  if(!loaded[url]) loaded[url]=new Promise((res,rej)=>{
+    const s=document.createElement('script'); s.src=url; s.onload=res;
+    s.onerror=()=>{ delete loaded[url]; rej(new Error('Could not load the file reader. Check your internet connection and try again.')); };
+    document.head.appendChild(s);
+  });
+  return loaded[url];
+}
+function median(a){ const s=a.slice().sort((x,y)=>x-y); return s.length?s[Math.floor(s.length/2)]:0; }
+async function pdfToText(file){
+  await loadScript(URL_PDF);
+  const lib=window.pdfjsLib;
+  if(!lib.GlobalWorkerOptions.workerSrc){
+    const r=await fetch(URL_PDFW); if(!r.ok) throw new Error('Could not load the PDF reader.');
+    lib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(await r.blob());
+  }
+  const pdf=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+  const all=[];
+  for(let n=1;n<=pdf.numPages;n++){
+    const page=await pdf.getPage(n); const tc=await page.getTextContent();
+    const lines=[];
+    for(const it of tc.items){
+      if(typeof it.str!=='string') continue;
+      const y=it.transform[5], h=it.height||Math.abs(it.transform[3])||10;
+      const last=lines[lines.length-1];
+      if(last && Math.abs(last.y-y)<=Math.max(2,h*0.5)) last.text+=it.str;
+      else lines.push({y,h,text:it.str});
+    }
+    const ls=lines.map(l=>({...l,text:l.text.replace(/\s+/g,' ').trim()})).filter(l=>l.text);
+    const gaps=[]; for(let i=1;i<ls.length;i++){ const g=ls[i-1].y-ls[i].y; if(g>0) gaps.push(g); }
+    const brk=median(gaps)*1.45;
+    const paras=[]; let curP=null;
+    ls.forEach((l,i)=>{
+      const gap=i?ls[i-1].y-l.y:0;
+      if(!curP || gap<0 || (brk && gap>brk)){ curP=l.text; paras.push(curP); }
+      else {
+        const prev=paras[paras.length-1];
+        const joined=(/[a-z]-$/.test(prev) && /^[a-z]/.test(l.text)) ? prev.slice(0,-1)+l.text : prev+' '+l.text;
+        paras[paras.length-1]=joined; curP=joined;
+      }
+    });
+    paras.forEach((p,i)=>{
+      if(i===0 && all.length && !/[.!?…:;"'”’)]$/.test(all[all.length-1])) all[all.length-1]+=' '+p;
+      else all.push(p);
+    });
+  }
+  const text=all.join('\n\n');
+  if(!text.trim()) throw new Error('No selectable text found. This PDF may be a scan.');
+  return text;
+}
+async function fileToText(file){
+  const name=file.name.toLowerCase();
+  if(name.endsWith('.pdf')||file.type==='application/pdf') return pdfToText(file);
+  if(name.endsWith('.docx')){
+    await loadScript(URL_MAM);
+    const r=await window.mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
+    if(!r.value.trim()) throw new Error('That Word file has no text.');
+    return r.value;
+  }
+  if(name.endsWith('.doc')) throw new Error('Old .doc files are not supported. Save it as .docx and try again.');
+  return file.text();
+}
+async function importFile(file){
+  if(!file) return;
+  showTab('script'); scriptMsg('Reading '+file.name+'...');
+  try{
+    const text=await fileToText(file);
+    $('#scriptTa').value=text;
+    applyScript(false);
+    if(!S.pendingDiscard) scriptMsg(`Imported ${S.paras.length} lines from ${file.name}. Check where paragraphs were split and edit if needed.`);
+  }catch(e){ scriptMsg(e.message||'Could not read that file.'); }
+}
+
+/* ---------- takes ---------- */
+const activeTake = p => p.takes[p.active]||null;
+const range = t => S.set.trim ? [t.ts,t.te] : [0,t.buf.duration];
+function findTrim(buf){
+  const d=buf.getChannelData(0), sr=buf.sampleRate, th=0.012;
+  let a=0,b=d.length-1;
+  while(a<b && Math.abs(d[a])<th) a++;
+  while(b>a && Math.abs(d[b])<th) b--;
+  if(b-a<sr*0.05) return {ts:0,te:buf.duration};
+  return {ts:Math.max(0,a/sr-0.12), te:Math.min(buf.duration,b/sr+0.25)};
+}
+async function makeTake(blob,id){
+  const buf=await ctx().decodeAudioData(await blob.arrayBuffer());
+  const tr=findTrim(buf);
+  return {id:id||uid(),blob,mime:blob.type,buf,ts:tr.ts,te:tr.te};
+}
+function layout(){
+  const clips=[]; let t=0;
+  S.paras.forEach((p,i)=>{
+    const tk=activeTake(p); if(!tk||!tk.buf) return;
+    const [a,b]=range(tk); const d=Math.max(0.05,b-a);
+    clips.push({i,tk,a,d,start:t}); t+=d+S.set.gap;
+  });
+  return {clips,total:clips.length?t-S.set.gap:0};
+}
+
+/* ---------- microphone ---------- */
+function micError(e){
+  if(!navigator.mediaDevices) return 'This page needs a secure context (https or a local file) to use the microphone.';
+  if(e&&e.name==='NotAllowedError') return 'Microphone access is blocked. Click the lock icon in the address bar, allow the microphone, then try again.';
+  if(e&&(e.name==='NotFoundError'||e.name==='OverconstrainedError')) return 'No microphone found. Plug one in or pick another input.';
+  return 'Could not open the microphone: '+((e&&e.message)||'unknown error');
+}
+async function ensureMic(){
+  if(S.stream && S.stream.active) return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw new Error('nomd');
+  const c={echoCancellation:false,noiseSuppression:false,autoGainControl:false};
+  if(S.deviceId) c.deviceId={exact:S.deviceId};
+  S.stream=await navigator.mediaDevices.getUserMedia({audio:c});
+  const ac=ctx(); const src=ac.createMediaStreamSource(S.stream);
+  S.an=ac.createAnalyser(); S.an.fftSize=1024; S.anBuf=new Float32Array(1024); src.connect(S.an);
+  $('#micBtn').textContent='Mic on'; $('#micBtn').disabled=true;
+  await refreshDevices();
+}
+async function refreshDevices(){
+  try{
+    const devs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audioinput');
+    const sel=$('#devSel'); sel.innerHTML='';
+    const cur=S.stream&&S.stream.getAudioTracks()[0]?S.stream.getAudioTracks()[0].getSettings().deviceId:'';
+    devs.forEach((d,i)=>{ const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label||('Microphone '+(i+1)); if(d.deviceId===cur) o.selected=true; sel.appendChild(o); });
+  }catch(e){}
+}
+function meterLoop(){
+  const bar=$('#meterBar');
+  if(S.an){ S.an.getFloatTimeDomainData(S.anBuf); let m=0; for(let i=0;i<S.anBuf.length;i++){ const v=Math.abs(S.anBuf[i]); if(v>m)m=v; } S.level=Math.max(S.level*0.86,m); bar.style.transform='scaleX('+Math.min(1,S.level*1.5)+')'; bar.style.background=S.level>0.9?'var(--rec)':'var(--ok)'; }
+  requestAnimationFrame(meterLoop);
+}
+
+/* ---------- recording ---------- */
+function pickMime(){ const l=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus']; return l.find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||''; }
+function setErr(t,kind){ const e=$('#err'); e.textContent=t||''; e.classList.toggle('info',kind===true||kind==='info'); e.classList.toggle('warn',kind==='warn'); }
+
+/* ---------- reading check (speech recognition) ---------- */
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+const LANGS=[['','Auto (browser language)'],['en-US','English (US)'],['en-GB','English (UK)'],['tr-TR','Türkçe'],['de-DE','Deutsch'],['fr-FR','Français'],['es-ES','Español'],['it-IT','Italiano'],['pt-BR','Português (Brasil)'],['nl-NL','Nederlands'],['ru-RU','Русский']];
+const speechLang=()=>S.set.lang||navigator.language||'en-US';
+const tokensOf=t=>t.split(/\s+/).filter(Boolean);
+const nrm=(s,l)=>{ try{ return s.toLocaleLowerCase(l).normalize('NFC').replace(/[^\p{L}\p{N}]+/gu,''); }catch(e){ return s.toLowerCase().replace(/[^a-z0-9]+/g,''); } };
+function lev(a,b){
+  const m=a.length,n=b.length; let prev=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
+  return prev[n];
+}
+function wordMatch(a,b){
+  if(a===b) return true;
+  if(Math.min(a.length,b.length)<=3) return false;
+  return 1-lev(a,b)/Math.max(a.length,b.length)>=0.65;
+}
+/* 0 = not reached yet, 1 = said it, 2 = missed it */
+function alignWords(text,spoken,final){
+  const lang=speechLang(), toks=tokensOf(text), nw=toks.map(t=>nrm(t,lang));
+  const valid=[]; nw.forEach((w,i)=>{ if(w) valid.push(i); });
+  const st=new Array(toks.length).fill(0); let p=0;
+  for(const raw of spoken){
+    if(p>=valid.length) break;
+    const w=nrm(raw,lang); if(!w) continue;
+    const end=Math.min(valid.length,p+5); let j=-1;
+    for(let k=p;k<end;k++){
+      const sw=nw[valid[k]];
+      if(sw.length<=3 && k>p+3) continue;
+      if(wordMatch(sw,w)){ j=k; break; }
+    }
+    if(j>=0){ for(let k=p;k<j;k++) st[valid[k]]=2; st[valid[j]]=1; p=j+1; }
+  }
+  if(final) for(let k=p;k<valid.length;k++) st[valid[k]]=2;
+  return st;
+}
+function paintWords(){
+  const p=S.paras[S.cur], tk=p&&activeTake(p); let st=null;
+  if(S.rec==='rec'&&S.recIdx===S.cur) st=S.liveSt;
+  else if(S.rec==='idle'&&tk&&tk.words&&tk.words.length===S.wordEls.length) st=tk.words;
+  S.wordEls.forEach((el,i)=>{ const v=st?st[i]:0; el.classList.toggle('hit',v===1); el.classList.toggle('miss',v===2); });
+}
+function startSpeech(){
+  S.sp=null; S.liveSt=null;
+  if(!SR||!S.set.read) return;
+  const sp={base:[],cur:[],rec:null,stopping:false,ok:true,fatal:'',resolveDone:null};
+  sp.done=new Promise(res=>{ sp.resolveDone=res; });
+  S.sp=sp; spawnSpeech(sp);
+}
+function spawnSpeech(sp){
+  let r; try{ r=new SR(); }catch(e){ sp.ok=false; sp.resolveDone(); return; }
+  r.continuous=true; r.interimResults=true; r.maxAlternatives=1; r.lang=speechLang();
+  r.onresult=e=>{
+    const parts=[]; for(let i=0;i<e.results.length;i++) parts.push(e.results[i][0].transcript);
+    sp.cur=parts.join(' ').split(/\s+/).filter(Boolean);
+    if(S.rec==='rec'){ const p=S.paras[S.recIdx]; if(p){ S.liveSt=alignWords(p.text,sp.base.concat(sp.cur),false); paintWords(); } }
+  };
+  r.onerror=e=>{
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){ sp.ok=false; sp.fatal='The reading check was blocked. Allow speech recognition for this page, or turn the check off.'; }
+    else if(e.error==='network'){ sp.ok=false; sp.fatal='The reading check needs an internet connection. The recording itself still works.'; }
+    else if(e.error==='language-not-supported'){ sp.ok=false; sp.fatal='This browser does not support that speech language.'; }
+  };
+  r.onend=()=>{
+    if(sp.stopping||!sp.ok){ sp.resolveDone(); return; }
+    sp.base=sp.base.concat(sp.cur); sp.cur=[];
+    setTimeout(()=>{ if(!sp.stopping&&sp.ok){ try{ spawnSpeech(sp); }catch(e){ sp.resolveDone(); } } else sp.resolveDone(); },150);
+  };
+  sp.rec=r; try{ r.start(); }catch(e){ sp.ok=false; sp.resolveDone(); }
+}
+function stopSpeech(){ const sp=S.sp; if(!sp) return; sp.stopping=true; try{ sp.rec&&sp.rec.stop(); }catch(e){} }
+
+async function toggleRec(){
+  if(S.finishing) return;
+  if(S.rec==='count'){ clearInterval(S.timer); S.rec='idle'; updateStage(); return; }
+  if(S.rec==='rec'){ stopRec(); return; }
+  if(!S.paras.length){ setErr('Add a script first (Script tab).'); return; }
+  stopAll(); setErr('');
+  try{ await ensureMic(); }catch(e){ setErr(micError(e)); return; }
+  ctx().resume();
+  S.recIdx=S.cur;
+  const n=S.set.count;
+  if(n>0){
+    S.rec='count'; S.countLeft=n; updateStage();
+    S.timer=setInterval(()=>{ S.countLeft--; if(S.countLeft<=0){ clearInterval(S.timer); beginRec(); } else updateStage(); },1000);
+  } else beginRec();
+}
+function beginRec(){
+  const mime=pickMime();
+  let mr; try{ mr=new MediaRecorder(S.stream,mime?{mimeType:mime}:undefined); }catch(e){ S.rec='idle'; setErr('This browser cannot record audio.'); updateStage(); return; }
+  S.chunks=[]; mr.ondataavailable=e=>{ if(e.data&&e.data.size) S.chunks.push(e.data); };
+  mr.onstop=onRecStop; mr.start(250); S.mr=mr; S.rec='rec'; S.t0=performance.now();
+  startSpeech();
+  S.tick=setInterval(()=>{ $('#recTime').textContent=fmt((performance.now()-S.t0)/1000); },100);
+  renderList(); updateStage();
+}
+function stopRec(){ stopSpeech(); if(S.mr&&S.mr.state!=='inactive') S.mr.stop(); }
+async function onRecStop(){
+  clearInterval(S.tick);
+  const blob=new Blob(S.chunks,{type:(S.mr&&S.mr.mimeType)||'audio/webm'});
+  const idx=S.recIdx; S.rec='idle'; S.finishing=true;
+  const p=S.paras[idx], sp=S.sp;
+  let words=null, note='';
+  try{
+    if(!p) throw 0;
+    if(sp){
+      await Promise.race([sp.done,new Promise(r=>setTimeout(r,1500))]);
+      const spoken=sp.base.concat(sp.cur);
+      if(spoken.length) words=alignWords(p.text,spoken,true);
+      else note=sp.fatal||'No speech was picked up for the reading check.';
+    }
+    const tk=await makeTake(blob); tk.words=words;
+    p.takes.push(tk); p.active=p.takes.length-1;
+    if(S.set.auto && S.cur===idx && idx<S.paras.length-1) S.cur=idx+1;
+    S.sp=null; S.liveSt=null; S.finishing=false;
+    renderAll(); save();
+    if(words){
+      const toks=tokensOf(p.text), missed=toks.filter((t,i)=>words[i]===2);
+      if(missed.length){
+        const shown=missed.slice(0,5).map(t=>t.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'')).join(', ');
+        setErr(`Line ${idx+1}: ${missed.length} word${missed.length>1?'s':''} missed (${shown}${missed.length>5?', ...':''}). Select the line to see them in amber.`,'warn');
+      } else setErr(`Line ${idx+1}: every word heard.`,true);
+    } else if(note) setErr(note,'warn');
+  }catch(e){ S.sp=null; S.liveSt=null; S.finishing=false; setErr('That recording could not be read. Try again.'); renderAll(); }
+}
+function deleteTake(){
+  const p=S.paras[S.cur]; if(!p||p.active<0||S.rec!=='idle') return;
+  stopAll(); p.takes.splice(p.active,1); p.active=Math.min(p.active,p.takes.length-1);
+  renderAll(); save();
+}
+function stepTake(d){
+  const p=S.paras[S.cur]; if(!p||!p.takes.length||S.rec!=='idle') return;
+  const n=p.active+d; if(n<0||n>=p.takes.length) return;
+  p.active=n; stopAll(); renderAll(); save();
+}
+
+/* ---------- playback ---------- */
+function play(t0,endT){
+  stopAll(true);
+  const {clips,total}=layout(); if(!clips.length) return;
+  const c=ctx(); c.resume();
+  if(endT===undefined||endT>total) endT=total;
+  if(t0>=endT) t0=0;
+  const base=c.currentTime+0.06, nodes=[];
+  for(const k of clips){
+    const s=Math.max(k.start,t0), e=Math.min(k.start+k.d,endT);
+    if(e-s<=0.001) continue;
+    const src=c.createBufferSource(); src.buffer=k.tk.buf; src.connect(c.destination);
+    src.start(base+(s-t0), k.a+(s-k.start), e-s); nodes.push(src);
+  }
+  S.play={base,t0,end:endT,nodes}; S.pos=t0; updatePlayBtn(); requestAnimationFrame(loop);
+}
+function loop(){
+  const p=S.play; if(!p) return;
+  const pos=p.t0+Math.max(0,actx.currentTime-p.base);
+  S.pos=Math.min(pos,p.end); setPlayhead(true);
+  if(pos>=p.end){ stopAll(); return; }
+  requestAnimationFrame(loop);
+}
+function stopAll(keepPos){
+  const p=S.play;
+  if(p){ if(!keepPos) S.pos=Math.min(p.end,p.t0+Math.max(0,actx.currentTime-p.base)); p.nodes.forEach(n=>{ try{n.stop();}catch(e){} }); S.play=null; }
+  updatePlayBtn(); setPlayhead(false);
+}
+function togglePlay(){
+  if(S.rec!=='idle') return;
+  if(S.play){ stopAll(); return; }
+  const {total}=layout(); play(S.pos>=total?0:S.pos);
+}
+function listen(){
+  if(S.rec!=='idle') return;
+  const k=layout().clips.find(c=>c.i===S.cur); if(!k) return;
+  play(k.start,k.start+k.d);
+}
+function updatePlayBtn(){ $('#playBtn').textContent=S.play?'Pause':'Play all'; }
+
+/* ---------- export ---------- */
+function mono(buf,a,d){
+  const sr=buf.sampleRate, s0=Math.floor(a*sr), n=Math.max(1,Math.floor(d*sr)), ch=buf.numberOfChannels;
+  const out=new Float32Array(n);
+  for(let c=0;c<ch;c++){ const data=buf.getChannelData(c); for(let i=0;i<n;i++) out[i]+=(data[s0+i]||0)/ch; }
+  return out;
+}
+function wav(samples,sr){
+  const n=samples.length, b=new ArrayBuffer(44+n*2), v=new DataView(b);
+  const w=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4,36+n*2,true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true);
+  v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,sr,true); v.setUint32(28,sr*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+  let o=44; for(let i=0;i<n;i++){ const s=Math.max(-1,Math.min(1,samples[i])); v.setInt16(o,s<0?s*0x8000:s*0x7fff,true); o+=2; }
+  return new Blob([b],{type:'audio/wav'});
+}
+function dl(blob,name){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+function exportMix(){
+  const {clips,total}=layout(); if(!clips.length){ setErr('Record at least one line before exporting.'); return; }
+  const sr=ctx().sampleRate, out=new Float32Array(Math.ceil(total*sr)+1);
+  for(const k of clips){ const seg=mono(k.tk.buf,k.a,k.d), off=Math.round(k.start*sr); for(let i=0;i<seg.length&&off+i<out.length;i++) out[off+i]+=seg[i]; }
+  dl(wav(out,sr),'podcast-mix.wav'); setErr('Exported podcast-mix.wav',true);
+}
+function saveTake(){
+  const p=S.paras[S.cur], tk=p&&activeTake(p); if(!tk||!tk.buf) return;
+  const [a,b]=range(tk);
+  dl(wav(mono(tk.buf,a,b-a),tk.buf.sampleRate),`line-${pad2(S.cur+1)}-take-${p.active+1}.wav`);
+}
+
+/* ---------- rendering ---------- */
+function renderAll(){ renderList(); updateStage(); renderTimeline(); renderStats(); }
+function renderStats(){
+  const {clips,total}=layout(); const n=S.paras.length;
+  const missing=S.paras.map((p,i)=>activeTake(p)&&activeTake(p).buf?0:i+1).filter(Boolean);
+  const el=$('#stats');
+  if(!n){ el.textContent='No script yet'; return; }
+  el.innerHTML=`<b>${clips.length}</b> of ${n} lines recorded &middot; <b>${fmt(total)}</b>`+(missing.length&&missing.length<=8&&clips.length?` &middot; missing ${missing.join(', ')}`:'');
+}
+function renderList(){
+  const ul=$('#list'); ul.innerHTML='';
+  if(!S.paras.length){ const li=document.createElement('li'); li.className='empty'; li.textContent='No lines yet. Open the Script tab to type or upload your script.'; ul.appendChild(li); return; }
+  S.paras.forEach((p,i)=>{
+    const tk=activeTake(p);
+    const li=document.createElement('li');
+    li.className='line'+(i===S.cur?' cur':'')+(tk?' has':'')+(S.rec==='rec'&&S.recIdx===i?' live':'');
+    li.tabIndex=0; li.dataset.i=i;
+    const num=document.createElement('span'); num.className='num'; num.textContent=i+1;
+    const txt=document.createElement('span'); txt.className='txt'; txt.textContent=p.text;
+    const st=document.createElement('span'); st.className='st';
+    const dot=document.createElement('i'); st.appendChild(dot);
+    const label=document.createElement('span');
+    label.textContent=tk&&tk.buf?`${p.takes.length} take${p.takes.length>1?'s':''} · ${fmt(range(tk)[1]-range(tk)[0])}`:'Not recorded';
+    st.appendChild(label);
+    const nMiss=tk&&tk.words?tk.words.filter(v=>v===2).length:0;
+    if(nMiss){ const m=document.createElement('span'); m.className='miss'; m.textContent=`· ${nMiss} missed`; st.appendChild(m); }
+    li.append(num,txt,st); ul.appendChild(li);
+  });
+  const c=ul.querySelector('.cur'); if(c) c.scrollIntoView({block:'nearest'});
+}
+function updateStage(){
+  const n=S.paras.length, p=S.paras[S.cur], busy=S.rec!=='idle';
+  $('#lineLbl').textContent=n?`Line ${S.cur+1} of ${n}`:'No script';
+  const cur=$('#curText');
+  const key=p?p.id+'|'+p.text:'';
+  if(S.curKey!==key||!cur.firstChild){
+    S.curKey=key; cur.textContent=''; S.wordEls=[];
+    if(p){ const ts=tokensOf(p.text); ts.forEach((t,i)=>{ const sp=document.createElement('span'); sp.className='w'; sp.textContent=t; cur.appendChild(sp); if(i<ts.length-1) cur.appendChild(document.createTextNode(' ')); S.wordEls.push(sp); }); }
+    else cur.textContent='Add your script on the left to begin.';
+    cur.scrollTop=0;
+  }
+  paintWords();
+  cur.style.fontSize=S.set.font+'px'; cur.classList.toggle('rec',S.rec==='rec');
+  $('#prevCtx').textContent=S.paras[S.cur-1]?S.paras[S.cur-1].text:'';
+  $('#nextCtx').textContent=S.paras[S.cur+1]?S.paras[S.cur+1].text:(p?'End of script':'');
+  const tk=p&&activeTake(p);
+  const b=$('#recBtn'); b.classList.toggle('rec',S.rec==='rec'); b.classList.toggle('count',S.rec==='count');
+  $('#cnt').textContent=S.rec==='count'?S.countLeft:'';
+  $('#recLbl').textContent=S.rec==='count'?'Get ready (click to cancel)':S.rec==='rec'?'Stop':(tk?'Re-record':'Record');
+  if(S.rec!=='rec') $('#recTime').textContent=tk&&tk.buf?fmt(range(tk)[1]-range(tk)[0]):'0:00.0';
+  $('#prevBtn').disabled=busy||S.cur<=0;
+  $('#nextBtn').disabled=busy||S.cur>=n-1;
+  const tn=p?p.takes.length:0;
+  $('#tkLbl').textContent=tn?`Take ${p.active+1} / ${tn}`:'No takes';
+  $('#tkPrev').disabled=busy||!tn||p.active<=0;
+  $('#tkNext').disabled=busy||!tn||p.active>=tn-1;
+  $('#listenBtn').disabled=busy||!tk;
+  $('#saveTkBtn').disabled=busy||!tk;
+  $('#delTkBtn').disabled=busy||!tk;
+  $('#fMinus').disabled=S.set.font<=24; $('#fPlus').disabled=S.set.font>=84;
+}
+function go(d){
+  if(S.rec!=='idle') return;
+  const n=S.cur+d; if(n<0||n>=S.paras.length) return;
+  S.cur=n; stopAll(); renderList(); updateStage(); markClips(true); save();
+}
+function renderTimeline(){
+  const {clips,total}=layout(), pps=S.set.zoom, lane=$('#lane');
+  const w=Math.max(total*pps+80,$('#tlscroll').clientWidth-2);
+  lane.style.width=w+'px';
+  [...lane.querySelectorAll('.tick,.clip,.tlempty')].forEach(e=>e.remove());
+  const step=pps>=120?1:pps>=60?2:pps>=30?5:10;
+  for(let t=0;t*pps<w;t+=step){
+    const d=document.createElement('div'); d.className='tick'; d.style.left=(t*pps)+'px';
+    const s=document.createElement('span'); s.textContent=Math.floor(t/60)+':'+pad2(t%60); d.appendChild(s); lane.appendChild(d);
+  }
+  if(!clips.length){
+    const e=document.createElement('div'); e.className='tlempty'; e.textContent='Recorded lines are placed here in script order. Record line 1 to start the timeline.'; lane.appendChild(e);
+  }
+  for(const k of clips){
+    const el=document.createElement('div'); el.className='clip'+(k.i===S.cur?' sel':''); el.dataset.i=k.i;
+    el.style.left=(k.start*pps)+'px'; el.style.width=Math.max(12,k.d*pps)+'px';
+    const n=document.createElement('span'); n.className='n'; n.textContent=k.i+1; el.appendChild(n);
+    const p=S.paras[k.i];
+    if(p.takes.length>1){ const t=document.createElement('span'); t.className='tk'; t.textContent='take '+(p.active+1); el.appendChild(t); }
+    const cv=document.createElement('canvas'); el.appendChild(cv); lane.appendChild(el);
+    drawWave(cv,k,Math.max(12,k.d*pps));
+  }
+  setPlayhead(false);
+}
+function drawWave(cv,k,wCss){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const W=Math.min(16000,Math.floor(wCss*dpr)), H=Math.floor(64*dpr);
+  cv.width=W; cv.height=H;
+  const g=cv.getContext('2d'); g.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--wave').trim()||'#86c8dc';
+  const buf=k.tk.buf, sr=buf.sampleRate, d=buf.getChannelData(0);
+  const s0=Math.floor(k.a*sr), spp=Math.max(1,Math.floor(k.d*sr/W)), stride=Math.max(1,Math.floor(spp/24));
+  for(let x=0;x<W;x++){
+    let m=0; const b=s0+x*spp;
+    for(let i=0;i<spp;i+=stride){ const v=Math.abs(d[b+i]||0); if(v>m) m=v; }
+    const h=Math.max(1,Math.min(1,m*2.2)*H*0.9);
+    g.fillRect(x,(H-h)/2,1,h);
+  }
+}
+function markClips(scroll){
+  document.querySelectorAll('.clip').forEach(c=>c.classList.toggle('sel',+c.dataset.i===S.cur));
+  if(scroll){ const c=document.querySelector('.clip.sel'); if(c) c.scrollIntoView({block:'nearest',inline:'nearest'}); }
+}
+function setPlayhead(follow){
+  const x=S.pos*S.set.zoom; $('#playhead').style.left=x+'px';
+  const {total}=layout();
+  $('#timeLbl').innerHTML=fmt(S.pos)+' <small>/ '+fmt(total)+'</small>';
+  if(follow){ const sc=$('#tlscroll'); if(x>sc.scrollLeft+sc.clientWidth-40||x<sc.scrollLeft) sc.scrollLeft=Math.max(0,x-60); }
+}
+
+/* ---------- persistence ---------- */
+function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open('takeline',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+async function idbSet(k,v){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }
+async function idbGet(k){ const db=await idb(); return new Promise((res,rej)=>{ const r=db.transaction('kv').objectStore('kv').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+let saveT=null;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null}))}))};
+    idbSet('project',data).catch(()=>{});
+  },500);
+}
+async function restore(){
+  let d=null; try{ d=await idbGet('project'); }catch(e){}
+  if(!d||!d.paras){ $('#scriptTa').value=SAMPLE; S.paras=splitScript(SAMPLE).map(t=>({id:uid(),text:t,takes:[],active:-1})); return; }
+  Object.assign(S.set,d.set||{}); S.deviceId=d.deviceId||'';
+  for(const p of d.paras){
+    const np={id:p.id,text:p.text,takes:[],active:-1};
+    for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.words=t.words||null; np.takes.push(tk); }catch(e){} }
+    np.active=np.takes.length?Math.min(Math.max(p.active,0),np.takes.length-1):-1;
+    S.paras.push(np);
+  }
+  S.cur=Math.min(d.cur||0,Math.max(0,S.paras.length-1));
+  $('#scriptTa').value=S.paras.map(p=>p.text).join('\n\n');
+}
+
+/* ---------- UI wiring ---------- */
+function showTab(t){
+  S.tab=t;
+  $('#tabLines').setAttribute('aria-selected',t==='lines'); $('#tabScript').setAttribute('aria-selected',t==='script');
+  $('#list').classList.toggle('off',t!=='lines'); $('#editor').classList.toggle('on',t==='script');
+}
+function twoStep(btn,label,fn){
+  let armed=null; const orig=btn.textContent;
+  btn.addEventListener('click',()=>{
+    if(armed){ clearTimeout(armed); armed=null; btn.textContent=orig; btn.classList.remove('warn'); fn(); return; }
+    btn.textContent=label; btn.classList.add('warn');
+    armed=setTimeout(()=>{ armed=null; btn.textContent=orig; btn.classList.remove('warn'); },3500);
+  });
+}
+function wire(){
+  $('#tabLines').onclick=()=>showTab('lines'); $('#tabScript').onclick=()=>showTab('script');
+  $('#applyBtn').onclick=()=>applyScript(!!S.pendingDiscard);
+  $('#scriptTa').addEventListener('input',()=>{ if(S.pendingDiscard){ S.pendingDiscard=0; updateApplyBtn(); } });
+  $('#fileIn').onchange=e=>{ importFile(e.target.files[0]); e.target.value=''; };
+  const ed=$('#editor');
+  ['dragenter','dragover'].forEach(ev=>ed.addEventListener(ev,e=>{ e.preventDefault(); ed.classList.add('drop'); }));
+  ['dragleave','drop'].forEach(ev=>ed.addEventListener(ev,e=>{ e.preventDefault(); ed.classList.remove('drop'); }));
+  ed.addEventListener('drop',e=>importFile(e.dataTransfer.files[0]));
+  twoStep($('#resetBtn'),'Click again to erase all',()=>{
+    stopAll(); S.paras=[]; S.cur=0; S.pos=0; $('#scriptTa').value=''; S.pendingDiscard=0; updateApplyBtn(); scriptMsg('Cleared.'); renderAll(); save();
+  });
+  $('#list').addEventListener('click',e=>{ const li=e.target.closest('.line'); if(!li||S.rec!=='idle') return; S.cur=+li.dataset.i; stopAll(); renderList(); updateStage(); markClips(true); save(); });
+  $('#list').addEventListener('keydown',e=>{ if((e.key==='Enter')&&e.target.classList.contains('line')) e.target.click(); });
+  $('#micBtn').onclick=async()=>{ try{ await ensureMic(); setErr(''); }catch(e){ setErr(micError(e)); } };
+  $('#devSel').onchange=async e=>{
+    if(S.rec!=='idle') return;
+    S.deviceId=e.target.value; if(S.stream){ S.stream.getTracks().forEach(t=>t.stop()); S.stream=null; S.an=null; }
+    try{ await ensureMic(); setErr(''); }catch(err){ setErr(micError(err)); } save();
+  };
+  $('#countSel').onchange=e=>{ S.set.count=+e.target.value; save(); };
+  $('#readChk').onchange=e=>{ S.set.read=e.target.checked; save(); };
+  $('#langSel').onchange=e=>{ S.set.lang=e.target.value; save(); };
+  $('#autoChk').onchange=e=>{ S.set.auto=e.target.checked; save(); };
+  $('#trimChk').onchange=e=>{ S.set.trim=e.target.checked; stopAll(); renderAll(); save(); };
+  $('#gapIn').onchange=e=>{ S.set.gap=Math.min(5,Math.max(0,+e.target.value||0)); e.target.value=S.set.gap; stopAll(); renderAll(); save(); };
+  $('#exportBtn').onclick=exportMix;
+  $('#recBtn').onclick=toggleRec;
+  $('#prevBtn').onclick=()=>go(-1); $('#nextBtn').onclick=()=>go(1);
+  $('#tkPrev').onclick=()=>stepTake(-1); $('#tkNext').onclick=()=>stepTake(1);
+  $('#listenBtn').onclick=listen; $('#saveTkBtn').onclick=saveTake; $('#delTkBtn').onclick=deleteTake;
+  $('#fMinus').onclick=()=>{ S.set.font=Math.max(24,S.set.font-4); updateStage(); save(); };
+  $('#fPlus').onclick=()=>{ S.set.font=Math.min(84,S.set.font+4); updateStage(); save(); };
+  $('#playBtn').onclick=togglePlay;
+  $('#homeBtn').onclick=()=>{ const was=!!S.play; stopAll(); S.pos=0; setPlayhead(false); $('#tlscroll').scrollLeft=0; if(was) play(0); };
+  $('#zoomIn').oninput=e=>{ S.set.zoom=+e.target.value; renderTimeline(); save(); };
+  $('#lane').addEventListener('click',e=>{
+    const rect=$('#lane').getBoundingClientRect(); const t=Math.max(0,(e.clientX-rect.left)/S.set.zoom);
+    const clip=e.target.closest('.clip');
+    if(clip&&S.rec==='idle'){ S.cur=+clip.dataset.i; renderList(); updateStage(); markClips(false); }
+    const was=!!S.play; S.pos=t; if(was) play(t); else { setPlayhead(false); }
+  });
+  document.addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&e.detail>0) b.blur(); });
+  document.addEventListener('keydown',e=>{
+    const t=e.target; if(t.matches&&t.matches('textarea,input,select')) return;
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    if(e.code==='Space'){ if(t.tagName==='BUTTON') return; e.preventDefault(); toggleRec(); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); go(1); }
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); go(-1); }
+    else if(e.key==='l'||e.key==='L') listen();
+    else if(e.key==='p'||e.key==='P') togglePlay();
+  });
+  window.addEventListener('resize',()=>renderTimeline());
+}
+function syncControls(){
+  $('#countSel').value=String(S.set.count); $('#autoChk').checked=S.set.auto; $('#trimChk').checked=S.set.trim;
+  $('#gapIn').value=S.set.gap; $('#zoomIn').value=S.set.zoom;
+  const ls=$('#langSel'); ls.innerHTML='';
+  LANGS.forEach(([v,n])=>{ const o=document.createElement('option'); o.value=v; o.textContent=n; ls.appendChild(o); });
+  ls.value=S.set.lang;
+  const rc=$('#readChk'); rc.checked=S.set.read&&!!SR;
+  if(!SR){ rc.disabled=true; ls.disabled=true; rc.parentElement.title='Not supported in this browser. Use Chrome, Edge or Safari.'; }
+}
+(async function init(){
+  wire();
+  await restore();
+  S.scriptText=$('#scriptTa').value;
+  syncControls(); updateApplyBtn(); renderAll(); meterLoop();
+  if(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices) refreshDevices();
+  const anyTake=S.paras.some(p=>p.takes.length);
+  setErr(anyTake?'':(SR?'Press Record (or Space) to start. Words turn teal as you say them and amber if you skip them.':'Press Record (or Space) to start. The reading check needs Chrome, Edge or Safari, so words will not be colored in this browser.'),true);
+})();
+})();
+</script>
+</body>
+</html>
