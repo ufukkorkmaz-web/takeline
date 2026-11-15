@@ -618,6 +618,348 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .icon-label-button .action-svg{display:block;flex:none;stroke-width:1.9}
 .icon-label-button span{display:inline-block}
 .brand .brand-stem{display:inline-block;width:.115em;height:.73em;background:currentColor;border-radius:.005em;vertical-align:-.005em;margin-left:.045em;margin-right:.035em;flex:none}
+
+/* ============================================================
+   DARK SOFT-NEUMORPHIC / FITNESS REFERENCE INSPIRED SKIN
+   Visual styling ONLY: original position, dimensions and behavior
+   of all controls, panels, and timeline remain unchanged.
+   ============================================================ */
+:root{
+  --ink:#111d2d;
+  --panel:#1e2c40;
+  --panel2:#27394e;
+  --line:#3b5067;
+  --text:#edf6ff;
+  --muted:#a2b5c9;
+  --rec:#fc7da9;
+  --ok:#59d7c8;
+  --amber:#c3a0ff;
+  --clip:#314666;
+  --wave:#72d6e6;
+  --teal:#76dbe9;
+  color-scheme:dark;
+}
+body{
+  background:radial-gradient(ellipse at 87% 8%,rgba(105,147,190,.14),transparent 43%),
+             radial-gradient(ellipse at 8% 78%,rgba(111,88,173,.12),transparent 45%),
+             linear-gradient(135deg,#131f30,#1a293d 55%,#111c2c);
+  color:var(--text);
+}
+.top{
+  background:linear-gradient(145deg,rgba(37,54,75,.96),rgba(28,43,62,.96));
+  border-bottom:1px solid #40546b;
+  box-shadow:7px 8px 20px #0a1424a8,inset 1px 1px 1px #a6dfff13;
+}
+.brand,.panel-heading strong,.step-heading strong,.timeline-heading strong{color:#f0f7ff}
+.brandtag{color:#c2a6ff}
+.brandsub,.stats,.panel-heading small,.step-heading small,.timeline-heading small{color:#a1b5ca}
+.stats b{color:#dff3ff}
+.btn{
+  background:linear-gradient(145deg,#304359,#223349);
+  border:1px solid #425b73;
+  border-radius:13px;
+  color:#e7f3ff;
+  box-shadow:5px 5px 11px #0b1829a8,-3px -3px 9px #5f7d9c27,
+             inset 1px 1px 2px #d0f1ff1c,inset -2px -2px 4px #0b1b2c52;
+}
+.btn:hover:not(:disabled){
+  background:linear-gradient(145deg,#39516b,#293e55);
+  border-color:#66839d;
+  box-shadow:6px 7px 14px #091627a8,-3px -3px 10px #7ba5c434,inset 1px 1px 2px #ddf6ff2a;
+}
+.btn:active:not(:disabled){box-shadow:inset 3px 3px 8px #0a1829aa,inset -2px -2px 5px #6c8eac35}
+.btn.primary{
+  color:#192840;
+  border-color:#b4d7f4;
+  background:linear-gradient(145deg,#c5e5fb,#8db9e2);
+  box-shadow:4px 5px 11px #0a1628a6,-2px -2px 7px #b3dfff35,
+             inset 2px 2px 2px #ffffffa3,inset -2px -3px 5px #5a8db66b;
+}
+.btn.primary:hover:not(:disabled){
+  background:linear-gradient(145deg,#d8efff,#a3d0f3);
+  border-color:#d5f0ff;
+  box-shadow:5px 6px 14px #0a1829bb,-2px -2px 9px #bce5ff45,inset 2px 2px 2px #ffffffaa;
+}
+.btn.warn{background:linear-gradient(145deg,#51384e,#392c40);border-color:#875b79;color:#ffc1d3}
+.btn.warn:hover:not(:disabled){background:#60435b;border-color:#d18caa}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.line:focus-visible,.settings-icon:focus-visible{outline-color:#a5dfe9}
+.script{
+  background:linear-gradient(150deg,#233449,#1c293c);
+  border-right:1px solid #455a70;
+  box-shadow:7px 0 19px #09142373,inset 1px 1px 1px #c2e9ff0d;
+}
+.stage{
+  background:radial-gradient(ellipse at 53% 28%,#2a3e56 0%,#1e3045 57%,#19283b 100%);
+}
+.stepnum{
+  background:linear-gradient(145deg,#526990,#32496d);color:#d4eaff;
+  border-color:#6882a2;
+  box-shadow:3px 4px 8px #081527a1,inset 2px 2px 3px #d9f4ff2b;
+}
+.tabs{border-bottom-color:#41546a}
+.tabs button{color:#b1c0d4;border-radius:13px}
+.tabs button:hover{color:#f1faff;background:#304459}
+.tabs button[aria-selected=true]{
+  color:#f4f1ff;background:linear-gradient(145deg,#4b456c,#353955);
+  border-color:#74719d;
+  box-shadow:3px 4px 9px #0e192d6e,inset 2px 2px 2px #ffffff22;
+}
+.line{border-radius:15px;color:#e2edf9}
+.line:hover{background:#30455c}
+.line.cur{
+  background:linear-gradient(145deg,#3c4967,#2a3b55);
+  border-color:#647da5;
+  box-shadow:5px 5px 12px #0b172a83,-2px -2px 8px #6b8ca528,inset 1px 1px 2px #b4d9ff2a;
+}
+.line .num,.line .st{color:#afc1d7}
+.line.has .st i{background:#67dfc5;border-color:#67dfc5}
+.editor textarea{
+  background:#19283a;color:#ecf4ff;border:1px solid #465e76;border-radius:16px;
+  box-shadow:inset 5px 5px 12px #0b1729b5,inset -3px -3px 8px #6c8ba626;
+}
+.hint{color:#b0c1d6}
+.lbl{
+  background:linear-gradient(145deg,#364f68,#293d53);color:#b7e7fa;
+  border:1px solid #4d7189;border-radius:12px;
+  box-shadow:3px 4px 8px #0a182a7a,inset 1px 1px 2px #d4f3ff19;
+}
+.prompter .ctx{color:#a9b8d0;opacity:.55}
+.prompter #prevCtx,.prompter #nextCtx{color:#a9b8d0;opacity:.37}
+.prompter .cur,.prompter>.cur.rec{color:#f7f9ff;text-shadow:none}
+.w.hit{color:#76e6d4}.w.miss{color:#ffd18d}
+.controls{border-top-color:#3a5068}
+.recwrap{
+  background:linear-gradient(145deg,#33495d,#24364b);
+  border:1px solid #4c627a;border-radius:18px;
+  box-shadow:5px 6px 13px #0b1629a1,-2px -2px 8px #789aba2c,inset 2px 2px 2px #ffffff18;
+}
+.recbtn{
+  background:linear-gradient(145deg,#72465e,#4b354d);
+  border-color:#ffacc8;
+  box-shadow:4px 5px 11px #0c1223a8,-2px -2px 7px #e99abb4a,inset 2px 2px 3px #ffffff35;
+}
+.recbtn:hover{background:linear-gradient(145deg,#87516e,#603d56)}
+.recbtn.rec{border-color:#ff87af;box-shadow:0 0 0 4px #ff87af24,4px 4px 11px #081325}
+.recbtn .dot{background:#ff83aa}
+.rectxt strong{color:#eff8ff}.rectxt span{color:#b6c8dc}
+.meter{background:#1a2c40;box-shadow:inset 2px 2px 5px #0b1728}
+.meter i{background:#64d9d0}
+.err{color:#ffa6bd}.err.info{color:#adc4de}.err.warn{color:#ffca91}
+.takenav{color:#adc0d5}
+.quick-toggle{
+  background:linear-gradient(145deg,#32465c,#26384c);color:#e5f0ff;
+  border-color:#4b627b;border-radius:14px;
+  box-shadow:4px 5px 10px #0c192bab,inset 2px 2px 2px #ffffff16;
+}
+.quick-toggle input,.settings-popover input[type=checkbox]{accent-color:#90dce6}
+.settings-menu[open]>summary{background:#3b4b68;border-color:#a78cdb}
+.settings-popover{
+  background:linear-gradient(145deg,#2d3c52,#1f3045);
+  color:#edf6ff;border:1px solid #516981;border-radius:19px;
+  box-shadow:12px 15px 34px #071223d6,-4px -4px 15px #7496b02a,inset 2px 2px 3px #ffffff20;
+}
+.settings-panel-title{color:#f2f8ff}.settings-panel-title span{color:#a7bad1}
+.settings-heading{color:#c8b2ff}.settings-popover label{color:#e4effc}
+.settings-section{background:#233449;border-color:#445d76;border-radius:14px}
+.settings-section>summary{color:#eaf2ff}
+.settings-section[open]>summary{color:#cdbbff;border-bottom-color:#445d77}
+.settings-section-content .hint{color:#a9bdd1}
+.settings-popover select,.settings-popover input[type=number],.opts select,.opts input[type=number]{
+  background:#1c2b3e;color:#f1f7ff;border:1px solid #546e85;border-radius:11px;
+  box-shadow:inset 3px 3px 7px #0a1524a8,inset -2px -2px 5px #6788a028;
+}
+.timeline{
+  background:linear-gradient(155deg,#25384d,#1c2a3d);
+  border-top:1px solid #475e75;
+  box-shadow:0 -7px 20px #0b17289c,inset 0 2px 2px #ffffff10;
+}
+.tltool{border-bottom-color:#435a72}
+.time{color:#f1f7ff}.time small{color:#a4b9d1}
+.edithelp,.zoom,.legend{color:#adc1d5}
+#tlscroll{background:linear-gradient(180deg,#17273b,#1b2c40);box-shadow:inset 0 5px 12px #0915248b}
+.tick{border-left-color:#354b62}.tick span{color:#9fb3cb}
+.clip{
+  background:linear-gradient(145deg,#5979a0,#354d79);
+  border:1px solid #819fcc;border-radius:13px;
+  box-shadow:5px 5px 11px #071427a8,-2px -2px 8px #90bcda42,
+             inset 2px 2px 3px #ffffff44,inset -2px -3px 5px #20345e7a;
+}
+.clip:hover{border-color:#b5e0f2;box-shadow:6px 6px 14px #081326bf,-3px -3px 8px #9ed5ee47}
+.clip.sel{border-color:#bda8ff;box-shadow:0 0 0 2px #b39dff,5px 5px 11px #071326a6}
+.clip.partsel{border-color:#e5d6ff;box-shadow:0 0 0 2px #c0acff,5px 5px 12px #071326a6}
+.clip .n{color:#f3f5ff;background:#182d49d9;border-radius:7px}.clip .tk{color:#e9f2ff}
+#playhead{border-left-color:#ffa8bb}
+#dropMarker{background:#bfabff;box-shadow:0 0 12px #bfabff80}
+#lane .tlempty{color:#9db4cf}
+input[type=range]{accent-color:#8bd8e4}
+#micBtn.mic-action,#noiseBtn.icon-action,.settings-menu>.settings-icon.icon-action{
+  background:linear-gradient(145deg,#344a60,#25374d);
+  border:1px solid #4c6880;color:#e8f4ff;border-radius:14px;
+  box-shadow:5px 5px 11px #0a1729a6,-3px -3px 8px #769ab130,inset 2px 2px 2px #ffffff21;
+}
+#micBtn.mic-action:hover:not(:disabled),#noiseBtn.icon-action:hover:not(:disabled),.settings-menu>.settings-icon.icon-action:hover{border-color:#8ca6c0}
+#micBtn.mic-ready,#micBtn.mic-ready:disabled,#noiseBtn.icon-action.is-active,.settings-menu[open]>.settings-icon.icon-action{
+  color:#113d3b;background:linear-gradient(145deg,#b3f7ed,#67dccc);
+  border-color:#b7fcf0;
+  box-shadow:4px 5px 12px #081b2fa3,-2px -2px 8px #b4fff64d,inset 2px 2px 2px #ffffff8f;
+}
+.export-dialog{
+  background:linear-gradient(145deg,#2b3c52,#1c2c40);color:#f0f7ff;
+  border-color:#587089;border-radius:19px;
+  box-shadow:12px 16px 38px #050e1ddd,-3px -3px 13px #719bb033;
+}
+.export-dialog select{background:#1c2b40;color:#f1f7ff;border-color:#58728a;border-radius:10px}
+.trim-grip.left{border-left-color:#8ee1e9}.trim-grip.right{border-right-color:#8ee1e9}
+.clip.trimming{border-color:#a7e6ee;box-shadow:0 0 0 2px #90dfed55}
+.prompter .w.follow-current{border-bottom-color:#7ae3d7}
+@media(max-width:860px){.top{background:#25384b}.stage{background:linear-gradient(145deg,#26394f,#1b2c40)}}
+@media(prefers-reduced-motion:reduce){.btn,.line,.clip{transition:none!important}}
+
+
+/* Deeper midnight background: background surfaces only; all geometry preserved. */
+:root { --ink:#05070d; --panel:#0c121c; }
+body {
+  background:radial-gradient(ellipse at 80% -18%,rgba(24,37,62,.36),transparent 47%),
+             radial-gradient(ellipse at 12% 100%,rgba(22,19,43,.22),transparent 45%),
+             #05070d;
+}
+.top {background:linear-gradient(180deg,#111a27,#0b121d);border-bottom-color:#263447}
+.script {background:linear-gradient(160deg,#111b29,#0b1420);border-right-color:#27374b}
+.stage {background:radial-gradient(ellipse at 52% 25%,#151f30 0%,#0b1421 65%,#080f19 100%)}
+.timeline {background:linear-gradient(180deg,#111b29,#0a121e);border-top-color:#2c3b50}
+#tlscroll {background:linear-gradient(180deg,#080f1a,#0b1522)}
+@media(max-width:860px){.top{background:#0d1622}.stage{background:linear-gradient(145deg,#101a29,#080f1a)}}
+
+
+/* Refined recording capsule and two-channel-style estimated input monitor. */
+.audio-monitor{width:221px;flex:0 0 221px;padding:8px 11px 6px;border:1px solid #344960;
+ border-radius:13px;background:linear-gradient(145deg,#152436,#0d1725);
+ box-shadow:inset 2px 2px 6px #040a14,inset -1px -1px 2px #7793b01b;
+ display:flex;flex-direction:column;gap:4px}
+.monitor-line{display:grid;grid-template-columns:39px minmax(0,1fr) 48px;align-items:center;gap:7px;height:13px}
+.monitor-name{font:700 9px var(--mono);letter-spacing:.055em;color:#b3c7da}
+.monitor-track{height:6px;border-radius:9px;background:#080f1b;border:1px solid #26394d;overflow:hidden}
+.monitor-track i{display:block;height:100%;width:0;transition:width .11s linear;border-radius:9px}
+#voiceLevel{background:linear-gradient(90deg,#49b8b7,#80eed0);box-shadow:0 0 7px #51dbce55}
+#noiseLevel{background:linear-gradient(90deg,#9072d9,#c2a2ed);box-shadow:0 0 6px #a28eea40}
+.monitor-line output{text-align:right;color:#cbd9e9;font:500 10px var(--mono);white-space:nowrap}
+.monitor-hint{font-size:9px;line-height:1.2;color:#829aaf;padding-left:46px;white-space:nowrap}
+.monitor-hint.peak-warn{color:#ffc68b}
+.recwrap{gap:11px;padding:5px 14px 5px 6px;border-radius:15px;min-height:50px}
+.recbtn{width:40px;height:38px;flex:0 0 40px;border-radius:11px;border-width:1px;border-color:#c77696;
+ background:linear-gradient(145deg,#713b55,#42283d);display:grid;place-items:center}
+.recbtn .dot{width:16px;height:16px;border-radius:5px;background:#ff83aa;
+ box-shadow:0 0 0 4px #ff83aa19,inset 0 1px 1px #ffffff70}
+.recbtn.rec .dot{width:15px;height:15px;border-radius:3px;background:#fff0f4}
+.recbtn.rec{border-color:#ff91ae;background:linear-gradient(145deg,#d04f79,#9a365c)}
+.recbtn.count .cnt{font-size:17px}
+.rectxt{gap:2px;min-width:76px}.rectxt strong{font-size:12px;line-height:1.1}.rectxt span{font-size:11px}
+@media(max-width:1200px){.audio-monitor{width:205px;flex-basis:205px}}
+@media(max-width:520px){.audio-monitor{width:100%;flex:1 1 100%;order:2}.header-actions{align-items:center}.monitor-hint{padding-left:46px}}
+@media(prefers-reduced-motion:reduce){.monitor-track i{transition:none}}
+
+/* Compact timeline controls: one continuous toolbar row. All interactions preserved. */
+.tltool{
+  display:flex;flex-wrap:nowrap;align-items:center;gap:clamp(3px,.42vw,7px);
+  padding:7px 10px 8px;min-width:0;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:thin;scrollbar-color:#536c84 transparent;
+}
+.tltool > *{flex:0 0 auto;min-width:0}
+.tltool .btn{
+  min-height:28px;padding:5px clamp(5px,.5vw,8px);border-radius:8px;
+  font-size:clamp(10px,.77vw,12px);line-height:1.15;white-space:nowrap;
+}
+.tltool .icon-label-button{gap:5px}
+.tltool .action-svg{width:14px;height:14px}
+.tltool .time{min-width:0;font-size:11px;white-space:nowrap;margin:0 3px}
+.tltool .time small{font-size:10px}
+.tltool .advanced-edit{gap:4px;font-size:11px;white-space:nowrap}
+.tltool .advanced-edit label{gap:4px}
+.tltool .advanced-edit input{width:clamp(48px,4.7vw,78px);height:16px;margin:0;accent-color:var(--teal)}
+.tltool .advanced-edit output{min-width:35px;font-size:10px}
+.tltool .zoom{gap:4px;font-size:11px;margin:0}
+.tltool .zoom input{width:clamp(46px,4.3vw,73px);height:16px;margin:0}
+.tltool .snap-edit{gap:3px;font-size:11px;white-space:nowrap}
+.tltool .snap-edit input{width:13px;height:13px;margin:0}
+@media(max-width:950px){.tltool{overflow-x:auto;scroll-snap-type:x proximity}}
+
+
+/* Balanced single-row timeline: readable, comfortably sized controls. */
+.tltool{
+  flex-wrap:nowrap;
+  gap:clamp(6px,.72vw,11px);
+  padding:10px clamp(12px,1.25vw,20px);
+  overflow-x:auto;
+  scrollbar-width:thin;
+}
+.tltool .btn{
+  min-height:34px;
+  padding:7px clamp(8px,.75vw,12px);
+  border-radius:10px;
+  font-size:clamp(11px,.85vw,13px);
+  line-height:1.25;
+  letter-spacing:0;
+}
+.tltool .icon-label-button{gap:7px}
+.tltool .action-svg{width:16px;height:16px}
+.tltool .time{min-width:0;font-size:13px;margin:0 5px}
+.tltool .time small{font-size:11px}
+.tltool .advanced-edit{gap:5px;font-size:12px}
+.tltool .advanced-edit label{gap:6px}
+.tltool .advanced-edit input{width:clamp(66px,6vw,110px);height:20px}
+.tltool .advanced-edit output{min-width:38px;font-size:11px}
+.tltool .zoom{gap:7px;font-size:12px}
+.tltool .zoom input{width:clamp(65px,5.7vw,105px);height:20px}
+.tltool .snap-edit{gap:5px;font-size:12px}
+.tltool .snap-edit input{width:15px;height:15px}
+/* If the viewport is too narrow, retain size and scroll rather than wrap. */
+@media(max-width:1200px){.tltool{gap:6px;padding-inline:10px}}
+
+
+/* Recording station: keep both live microphone estimates next to Record. */
+.recwrap{
+  display:flex;align-items:center;flex:0 0 auto;gap:10px;
+  padding:5px 12px 5px 6px;min-height:55px;
+}
+.recwrap .audio-monitor{
+  width:194px;flex:0 0 194px;min-width:0;
+  padding:5px 9px 4px;gap:3px;border-radius:10px;
+}
+.recwrap .monitor-line{grid-template-columns:39px minmax(0,1fr) 43px;gap:5px;height:12px}
+.recwrap .monitor-hint{font-size:8px;padding-left:44px}
+.rec-monitor-divider{height:30px;width:1px;background:#455566;flex:0 0 1px;opacity:.8}
+@media(max-width:1200px){.recwrap .audio-monitor{width:184px;flex-basis:184px}}
+@media(max-width:520px){
+ .recwrap{flex-wrap:wrap;justify-content:center;max-width:100%}
+ .recwrap .audio-monitor{order:initial;width:190px;flex:0 1 190px}
+ .recwrap .monitor-hint{padding-left:44px}
+}
+
+
+/* Seamless dark recording station — no bright capsule or raised panel. */
+.controls .recwrap {
+  background:transparent;
+  background-image:none;
+  border:0;
+  box-shadow:none;
+  border-radius:0;
+  padding:4px 2px;
+}
+.controls .recwrap .audio-monitor {
+  background:#0d1623;
+  background-image:none;
+  border:1px solid #263649;
+  box-shadow:none;
+  border-radius:9px;
+}
+.controls .rec-monitor-divider {
+  background:#314255;
+  opacity:.65;
+}
+.controls .recbtn {
+  box-shadow:0 2px 7px #05091188,inset 0 1px 0 #ffffff1a;
+}
+
 </style>
 </head>
 <body>
@@ -705,7 +1047,13 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
       </div>
       <div class="recwrap">
         <button class="recbtn" id="recBtn" type="button" aria-label="Record"><span class="dot"></span><span class="cnt" id="cnt"></span></button>
-        <div class="rectxt"><strong id="recLbl">Record</strong><span id="recTime">0:00.0</span><div class="meter" aria-hidden="true"><i id="meterBar"></i></div></div>
+        <div class="rectxt"><strong id="recLbl">Record</strong><span id="recTime">0:00.0</span></div>
+        <span class="rec-monitor-divider" aria-hidden="true"></span>
+    <div class="audio-monitor" id="audioMonitor" aria-label="Live microphone input monitor" title="Input levels before offline noise cleanup. Noise is an estimated ambient floor, not a separate microphone channel.">
+      <div class="monitor-line"><span class="monitor-name">VOICE</span><div class="monitor-track"><i id="voiceLevel"></i></div><output id="voiceDb">—</output></div>
+      <div class="monitor-line"><span class="monitor-name">NOISE</span><div class="monitor-track"><i id="noiseLevel"></i></div><output id="noiseDb">—</output></div>
+      <div class="monitor-hint" id="monitorHint">Enable mic to monitor</div>
+    </div>
       </div>
       <div class="group">
         <div class="takenav"><button class="btn" id="tkPrev" type="button" aria-label="Previous take">&lsaquo;</button><span id="tkLbl">No takes</span><button class="btn" id="tkNext" type="button" aria-label="Next take">&rsaquo;</button></div>
@@ -728,11 +1076,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
      <button class="btn" id="redoTimelineBtn" type="button" title="Redo timeline edit (Ctrl/Cmd+Shift+Z)">↷ Redo</button>
      <button class="btn" id="undoEditBtn" type="button" title="Restore the selected line's original take">Restore take</button>
     <div class="time" id="timeLbl">0:00.0 <small>/ 0:00.0</small></div>
-     <span class="edithelp">Drag to reorder · drag clip edges to trim · split / delete · click ruler to seek</span>
-         <div class="zoom">Zoom <input type="range" id="zoomIn" min="20" max="500" step="5" aria-label="Timeline zoom"></div>
      <div class="advanced-edit"><label>Clip gain <input type="range" id="clipGain" min="-24" max="18" step="0.5" value="0" aria-label="Selected clip gain in decibels"></label><output id="clipGainLabel">0 dB</output></div>
-     <div class="advanced-edit"><label>Crossfade <input type="range" id="crossfadeIn" min="0" max="500" step="10" value="80" aria-label="Crossfade in milliseconds"></label><output id="crossfadeLabel">80 ms</output></div>
-     <span class="edithelp">Crossfade uses a 0 s line gap</span>
+     <div class="advanced-edit" title="Crossfade uses a 0 s line gap"><label>Crossfade <input type="range" id="crossfadeIn" min="0" max="500" step="10" value="80" aria-label="Crossfade in milliseconds"></label><output id="crossfadeLabel">80 ms</output></div>
+     <div class="zoom">Zoom <input type="range" id="zoomIn" min="20" max="500" step="5" aria-label="Timeline zoom"></div>
+     
      <label class="snap-edit"><input type="checkbox" id="snapChk" checked> Snap</label>
    </div>
    <div id="tlscroll"><div id="lane"><div id="playhead"></div><div id="dropMarker"></div></div></div>
@@ -1232,9 +1579,48 @@ async function refreshDevices(){
     devs.forEach((d,i)=>{ const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label||('Microphone '+(i+1)); if(d.deviceId===cur) o.selected=true; sel.appendChild(o); });
   }catch(e){}
 }
-function meterLoop(){
-  const bar=$('#meterBar');
-  if(S.an){ S.an.getFloatTimeDomainData(S.anBuf); let m=0; for(let i=0;i<S.anBuf.length;i++){ const v=Math.abs(S.anBuf[i]); if(v>m)m=v; } S.level=Math.max(S.level*0.86,m); bar.style.transform='scaleX('+Math.min(1,S.level*1.5)+')'; bar.style.background=S.level>0.9?'var(--rec)':'var(--ok)'; }
+/* Input analyser is one microphone channel. These are separate ESTIMATES:
+   Voice: signal energy above a learned ambient floor; Noise: learned ambient floor.
+   They are not independent sound sources or measures of post-processing efficacy. */
+let ambientFloor=0.003, voiceSmooth=0, noiseSmooth=0;
+let meterLast=0;
+function meterLoop(now=0){
+  if(now-meterLast>55){
+    meterLast=now;
+    const connected=!!(S.an && S.stream && S.stream.active);
+    const vbar=$('#voiceLevel'), nbar=$('#noiseLevel');
+    const vdb=$('#voiceDb'), ndb=$('#noiseDb'), hint=$('#monitorHint');
+    if(connected){
+      S.an.getFloatTimeDomainData(S.anBuf);
+      let power=0, peak=0;
+      for(let i=0;i<S.anBuf.length;i++){
+        const x=S.anBuf[i];power+=x*x;peak=Math.max(peak,Math.abs(x));
+      }
+      const rms=Math.sqrt(power/S.anBuf.length);
+      /* Learn the quiet floor rapidly when quieter, very slowly when louder.
+         While speech is present, the floor stays nearly constant. */
+      if(rms<ambientFloor) ambientFloor=ambientFloor*.91+rms*.09;
+      else if(rms<ambientFloor*1.8) ambientFloor=ambientFloor*.998+rms*.002;
+      else ambientFloor=ambientFloor*.99995+rms*.00005;
+      ambientFloor=Math.max(.00008,Math.min(.3,ambientFloor));
+      const voice=Math.sqrt(Math.max(0,rms*rms-ambientFloor*ambientFloor));
+      voiceSmooth=voiceSmooth*.72+voice*.28;
+      noiseSmooth=noiseSmooth*.94+ambientFloor*.06;
+      const db=x=>20*Math.log10(Math.max(.00001,x));
+      const fill=x=>Math.max(0,Math.min(100,(db(x)+66)/60*100));
+      vbar.style.width=fill(voiceSmooth)+'%';
+      nbar.style.width=fill(noiseSmooth)+'%';
+      vdb.textContent=Math.round(db(voiceSmooth))+' dB';
+      ndb.textContent=Math.round(db(noiseSmooth))+' dB';
+      hint.textContent=peak>.97?'Input peak — reduce microphone gain':'Live input · estimated noise floor';
+      hint.classList.toggle('peak-warn',peak>.97);
+    }else{
+      voiceSmooth=0;noiseSmooth=0;ambientFloor=.003;
+      vbar.style.width='0%';nbar.style.width='0%';
+      vdb.textContent='—';ndb.textContent='—';
+      hint.textContent='Enable mic to monitor';hint.classList.remove('peak-warn');
+    }
+  }
   requestAnimationFrame(meterLoop);
 }
 
