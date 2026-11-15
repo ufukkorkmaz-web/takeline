@@ -67,9 +67,9 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
 .drop{outline:2px dashed var(--amber);outline-offset:-6px}
 
 /* stage */
-.stage{display:flex;flex-direction:column;min-width:0;min-height:0;padding:14px 28px 16px;gap:12px}
+.stage{display:flex;flex-direction:column;min-width:0;min-height:0;padding:10px 24px 10px;gap:8px}
 .lbl{font:400 12px var(--mono);letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
-.prompter{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.prompter{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:10px}
 .ctx{font:400 19px/1.4 var(--serif);color:#6c7079;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:1.4em}
 .cur{font-family:var(--serif);font-weight:500;line-height:1.32;overflow:auto;min-height:0;max-height:100%;text-wrap:pretty;padding:2px 0;flex:0 1 auto}
 .cur.rec{color:#fff}
@@ -77,15 +77,15 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
 .w.hit{color:var(--teal)}
 .w.miss{color:var(--amber);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.14em}
 .line .st .miss{color:var(--amber)}
-.controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px;padding-top:6px;border-top:1px solid var(--line)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px;padding-top:5px;border-top:1px solid var(--line)}
 .group{display:flex;align-items:center;gap:8px}
-.recwrap{display:flex;align-items:center;gap:14px}
-.recbtn{width:76px;height:76px;border-radius:50%;background:var(--panel2);border:3px solid var(--text);display:grid;place-items:center;padding:0}
-.recbtn .dot{width:30px;height:30px;border-radius:50%;background:var(--rec);transition:border-radius .15s,width .15s,height .15s}
-.recbtn .cnt{display:none;font:500 30px var(--mono)}
+.recwrap{display:flex;align-items:center;gap:8px}
+.recbtn{width:50px;height:50px;flex:none;border-radius:50%;background:var(--panel2);border:3px solid var(--text);display:grid;place-items:center;padding:0}
+.recbtn .dot{width:20px;height:20px;border-radius:50%;background:var(--rec);transition:border-radius .15s,width .15s,height .15s}
+.recbtn .cnt{display:none;font:500 20px var(--mono)}
 .recbtn.count .dot{display:none}.recbtn.count .cnt{display:block}
 .recbtn.rec{border-color:var(--rec);animation:ring 1.4s infinite}
-.recbtn.rec .dot{border-radius:6px;width:24px;height:24px}
+.recbtn.rec .dot{border-radius:4px;width:16px;height:16px}
 .rectxt{display:flex;flex-direction:column;gap:2px;min-width:96px}
 .rectxt strong{font-weight:500}
 .rectxt span{font:400 13px var(--mono);color:var(--muted)}
@@ -111,6 +111,10 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
 .tick span{position:absolute;top:3px;left:5px;font:400 10px var(--mono);color:var(--muted)}
 .clip{position:absolute;top:28px;bottom:14px;background:var(--clip);border:1px solid #35606f;border-radius:5px;overflow:hidden;cursor:pointer}
 .clip.sel{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+.clip.partsel{border-color:#fff;box-shadow:0 0 0 1px #fff}
+.legend{font:11px var(--mono);color:var(--muted);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.legend b{font-weight:500}.legend .yes{color:var(--teal)}.legend .no{color:var(--amber)}
+.edithelp{font:11px var(--mono);color:var(--muted)}
 .clip canvas{position:absolute;inset:0;width:100%;height:100%}
 .clip .n{position:absolute;top:2px;left:5px;font:500 11px var(--mono);color:#cfe9f1;background:rgba(10,20,25,.6);border-radius:3px;padding:0 4px;z-index:1}
 .clip .tk{position:absolute;top:2px;right:5px;font:400 10px var(--mono);color:#cfe9f1;z-index:1}
@@ -198,7 +202,11 @@ main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);min-he
   <div class="tltool">
     <button class="btn primary" id="playBtn" type="button">Play all</button>
     <button class="btn" id="homeBtn" type="button">&#9198; Start</button>
+    <button class="btn" id="splitBtn" type="button" title="Split the clip at the playhead (S)">Split at playhead</button>
+    <button class="btn warn" id="cutBtn" type="button" title="Remove selected timeline section (Delete)">Delete section</button>
+    <button class="btn" id="undoEditBtn" type="button" title="Restore the selected line's original take">Restore take</button>
     <div class="time" id="timeLbl">0:00.0 <small>/ 0:00.0</small></div>
+    <span class="edithelp">Click a section to select; click ruler/empty area to seek</span>
     <div class="zoom">Zoom <input type="range" id="zoomIn" min="20" max="200" step="5" aria-label="Timeline zoom"></div>
   </div>
   <div id="tlscroll"><div id="lane"><div id="playhead"></div></div></div>
@@ -223,9 +231,9 @@ const SAMPLE = [
 const S = {
   paras:[], cur:0, scriptText:'', tab:'lines', pendingDiscard:0,
   rec:'idle', recIdx:-1, countLeft:0, stream:null, an:null, anBuf:null, mr:null, chunks:[],
-  deviceId:'', pos:0, play:null, level:0,
+  deviceId:'', pos:0, play:null, level:0, selectedSeg:null,
   liveSt:null, wordEls:[], curKey:'', sp:null, finishing:false,
-  set:{gap:0.5, trim:true, count:2, auto:true, zoom:60, font:44, read:true, lang:''}
+  set:{gap:0.5, trim:true, count:2, auto:true, zoom:60, font:44, read:true, lang:'en-US'}
 };
 
 /* ---------- audio context ---------- */
@@ -250,7 +258,7 @@ function applyScript(force){
   if(lost && !force){ S.pendingDiscard=lost; scriptMsg(`${lost} recorded take${lost>1?'s belong':' belongs'} to lines you changed or removed. Press the button again to discard them.`); updateApplyBtn(); return; }
   S.pendingDiscard=0; updateApplyBtn();
   stopAll();
-  S.paras=next; S.cur=Math.min(S.cur,Math.max(0,next.length-1)); S.pos=0;
+  S.paras=next; S.cur=Math.min(S.cur,Math.max(0,next.length-1)); S.pos=0; S.selectedSeg=null;
   $('#scriptTa').value=next.map(p=>p.text).join('\n\n'); S.scriptText=$('#scriptTa').value;
   scriptMsg(next.length?`${next.length} line${next.length>1?'s':''} ready. Unchanged lines kept their takes.`:'The script is empty.');
   renderAll(); save();
@@ -339,6 +347,12 @@ async function importFile(file){
 /* ---------- takes ---------- */
 const activeTake = p => p.takes[p.active]||null;
 const range = t => S.set.trim ? [t.ts,t.te] : [0,t.buf.duration];
+/* Audio edits are non-destructive offsets into the original decoded recording. */
+function partsOf(tk){
+  if(Array.isArray(tk.parts)) return tk.parts;
+  const [a,b]=range(tk);
+  return [{id:'whole',a,b}];
+}
 function findTrim(buf){
   const d=buf.getChannelData(0), sr=buf.sampleRate, th=0.012;
   let a=0,b=d.length-1;
@@ -353,13 +367,71 @@ async function makeTake(blob,id){
   return {id:id||uid(),blob,mime:blob.type,buf,ts:tr.ts,te:tr.te};
 }
 function layout(){
-  const clips=[]; let t=0;
+  const clips=[]; let t=0, hasLine=false;
   S.paras.forEach((p,i)=>{
     const tk=activeTake(p); if(!tk||!tk.buf) return;
-    const [a,b]=range(tk); const d=Math.max(0.05,b-a);
-    clips.push({i,tk,a,d,start:t}); t+=d+S.set.gap;
+    const parts=partsOf(tk).filter(seg=>seg.b-seg.a>=0.005);
+    if(!parts.length) return;
+    if(hasLine) t+=S.set.gap;
+    hasLine=true;
+    for(const seg of parts){
+      const d=seg.b-seg.a;
+      clips.push({i,tk,segId:seg.id,a:seg.a,d,start:t});
+      t+=d;
+    }
   });
-  return {clips,total:clips.length?t-S.set.gap:0};
+  return {clips,total:t};
+}
+function selectedClip(){
+  const all=layout().clips;
+  return all.find(k=>`${k.i}:${k.tk.id}:${k.segId}`===S.selectedSeg)||null;
+}
+function selectClip(k){
+  S.selectedSeg=k?`${k.i}:${k.tk.id}:${k.segId}`:null;
+  updateEditBtns();
+  markClips(false);
+}
+function updateEditBtns(){
+  const all=layout().clips, k=selectedClip(), here=all.find(x=>S.pos>x.start+0.015&&S.pos<x.start+x.d-0.015);
+  const editable=S.rec==='idle'&&!S.finishing;
+  $('#splitBtn').disabled=!editable||!here;
+  $('#cutBtn').disabled=!editable||!k;
+  const p=S.paras[S.cur], tk=p&&activeTake(p);
+  $('#undoEditBtn').disabled=!editable||!tk||!Array.isArray(tk.parts);
+}
+function splitAtPlayhead(){
+  if(S.rec!=='idle'||S.finishing) return;
+  const k=layout().clips.find(x=>S.pos>x.start+0.015&&S.pos<x.start+x.d-0.015);
+  if(!k){setErr('Place the playhead inside a recording before splitting.','warn'); return;}
+  stopAll();
+  const tk=k.tk;
+  if(!tk.parts) tk.parts=partsOf(tk).map(p=>({...p}));
+  const idx=tk.parts.findIndex(p=>p.id===k.segId);
+  if(idx<0) return;
+  const part=tk.parts[idx], at=k.a+(S.pos-k.start);
+  const left={id:uid(),a:part.a,b:at}, right={id:uid(),a:at,b:part.b};
+  tk.parts.splice(idx,1,left,right);
+  S.cur=k.i;
+  S.selectedSeg=`${k.i}:${tk.id}:${right.id}`;
+  renderAll(); save(); setErr('Split created. Select either section and use Delete section to remove it.',true);
+}
+function deleteSection(){
+  if(S.rec!=='idle'||S.finishing) return;
+  const k=selectedClip(); if(!k) return;
+  stopAll();
+  const tk=k.tk;
+  if(!tk.parts) tk.parts=partsOf(tk).map(p=>({...p}));
+  tk.parts=tk.parts.filter(p=>p.id!==k.segId);
+  S.selectedSeg=null; S.pos=Math.min(k.start,layout().total);
+  renderAll(); save(); setErr('Section removed from the mix. Restore take to undo edits.',true);
+}
+function restoreTake(){
+  if(S.rec!=='idle'||S.finishing) return;
+  const p=S.paras[S.cur], tk=p&&activeTake(p);
+  if(!tk||!Array.isArray(tk.parts)) return;
+  stopAll(); delete tk.parts; S.selectedSeg=null;
+  S.pos=Math.min(S.pos,layout().total);
+  renderAll(); save(); setErr('Original recording restored.',true);
 }
 
 /* ---------- microphone ---------- */
@@ -401,7 +473,7 @@ function setErr(t,kind){ const e=$('#err'); e.textContent=t||''; e.classList.tog
 /* ---------- reading check (speech recognition) ---------- */
 const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
 const LANGS=[['','Auto (browser language)'],['en-US','English (US)'],['en-GB','English (UK)'],['tr-TR','Türkçe'],['de-DE','Deutsch'],['fr-FR','Français'],['es-ES','Español'],['it-IT','Italiano'],['pt-BR','Português (Brasil)'],['nl-NL','Nederlands'],['ru-RU','Русский']];
-const speechLang=()=>S.set.lang||navigator.language||'en-US';
+const speechLang=()=>S.set.lang||'en-US';
 const tokensOf=t=>t.split(/\s+/).filter(Boolean);
 const nrm=(s,l)=>{ try{ return s.toLocaleLowerCase(l).normalize('NFC').replace(/[^\p{L}\p{N}]+/gu,''); }catch(e){ return s.toLowerCase().replace(/[^a-z0-9]+/g,''); } };
 function lev(a,b){
@@ -416,21 +488,51 @@ function wordMatch(a,b){
 }
 /* 0 = not reached yet, 1 = said it, 2 = missed it */
 function alignWords(text,spoken,final){
-  const lang=speechLang(), toks=tokensOf(text), nw=toks.map(t=>nrm(t,lang));
-  const valid=[]; nw.forEach((w,i)=>{ if(w) valid.push(i); });
-  const st=new Array(toks.length).fill(0); let p=0;
-  for(const raw of spoken){
-    if(p>=valid.length) break;
-    const w=nrm(raw,lang); if(!w) continue;
-    const end=Math.min(valid.length,p+5); let j=-1;
-    for(let k=p;k<end;k++){
-      const sw=nw[valid[k]];
-      if(sw.length<=3 && k>p+3) continue;
-      if(wordMatch(sw,w)){ j=k; break; }
+  // Ordered sequence alignment: repeated words can be matched without jumping
+  // to an unrelated later occurrence. Only confidently matched words turn teal.
+  const lang=speechLang(), toks=tokensOf(text), norm=toks.map(t=>nrm(t,lang));
+  const indices=norm.map((w,i)=>w?i:-1).filter(i=>i>=0);
+  const expected=indices.map(i=>norm[i]);
+  const heard=spoken.map(w=>nrm(w,lang)).filter(Boolean);
+  const n=expected.length, m=heard.length;
+  const st=new Array(toks.length).fill(0);
+  if(!m){return st;} // No transcript is not evidence that words were skipped.
+  const dp=Array.from({length:n+1},()=>new Float32Array(m+1));
+  const move=Array.from({length:n+1},()=>new Uint8Array(m+1));
+  // Match reward 3, skip script word cost 0.65, unrecognized word cost 0.85.
+  for(let i=1;i<=n;i++){dp[i][0]=dp[i-1][0]-.65;move[i][0]=1;}
+  for(let j=1;j<=m;j++){dp[0][j]=dp[0][j-1]-.85;move[0][j]=2;}
+  for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){
+    let best=dp[i-1][j]-.65, step=1;
+    const skip=dp[i][j-1]-.85;
+    if(skip>best){best=skip;step=2;}
+    if(wordMatch(expected[i-1],heard[j-1])){
+      const hit=dp[i-1][j-1]+3;
+      if(hit>=best){best=hit;step=3;}
     }
-    if(j>=0){ for(let k=p;k<j;k++) st[valid[k]]=2; st[valid[j]]=1; p=j+1; }
+    dp[i][j]=best;move[i][j]=step;
   }
-  if(final) for(let k=p;k<valid.length;k++) st[valid[k]]=2;
+  // Do not penalize trailing script words while the speaker is still talking.
+  let i=n,j=m;
+  if(!final){
+    let best=-Infinity;
+    for(let k=0;k<=n;k++) if(dp[k][m]>best){best=dp[k][m];i=k;}
+  }
+  const matched=[];
+  while(i>0||j>0){
+    const step=move[i][j];
+    if(step===3){matched.push(i-1);i--;j--;}
+    else if(step===1) i--;
+    else if(step===2) j--;
+    else break;
+  }
+  matched.reverse();
+  for(const v of matched) st[indices[v]]=1;
+  if(matched.length){
+    const last=matched[matched.length-1];
+    for(let k=0;k<(final?n:last);k++) if(st[indices[k]]===0) st[indices[k]]=2;
+    // Do not mark trailing words as skipped until the recording ends.
+  }
   return st;
 }
 function paintWords(){
@@ -464,7 +566,7 @@ function spawnSpeech(sp){
     sp.base=sp.base.concat(sp.cur); sp.cur=[];
     setTimeout(()=>{ if(!sp.stopping&&sp.ok){ try{ spawnSpeech(sp); }catch(e){ sp.resolveDone(); } } else sp.resolveDone(); },150);
   };
-  sp.rec=r; try{ r.start(); }catch(e){ sp.ok=false; sp.resolveDone(); }
+  sp.rec=r; try{ r.start(); }catch(e){ sp.ok=false; sp.fatal='Could not start speech recognition. Check browser permissions and language.'; sp.resolveDone(); }
 }
 function stopSpeech(){ const sp=S.sp; if(!sp) return; sp.stopping=true; try{ sp.rec&&sp.rec.stop(); }catch(e){} }
 
@@ -504,11 +606,11 @@ async function onRecStop(){
     if(sp){
       await Promise.race([sp.done,new Promise(r=>setTimeout(r,1500))]);
       const spoken=sp.base.concat(sp.cur);
-      if(spoken.length) words=alignWords(p.text,spoken,true);
-      else note=sp.fatal||'No speech was picked up for the reading check.';
+      if(spoken.length){ words=alignWords(p.text,spoken,true); if(sp.fatal) note=sp.fatal; }
+      else note=sp.fatal||'No words recognized. Check your speech language, microphone and browser permissions; no missed words were assumed.';
     }
     const tk=await makeTake(blob); tk.words=words;
-    p.takes.push(tk); p.active=p.takes.length-1;
+    p.takes.push(tk); p.active=p.takes.length-1; S.selectedSeg=null;
     if(S.set.auto && S.cur===idx && idx<S.paras.length-1) S.cur=idx+1;
     S.sp=null; S.liveSt=null; S.finishing=false;
     renderAll(); save();
@@ -517,19 +619,19 @@ async function onRecStop(){
       if(missed.length){
         const shown=missed.slice(0,5).map(t=>t.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'')).join(', ');
         setErr(`Line ${idx+1}: ${missed.length} word${missed.length>1?'s':''} missed (${shown}${missed.length>5?', ...':''}). Select the line to see them in amber.`,'warn');
-      } else setErr(`Line ${idx+1}: every word heard.`,true);
+      } else setErr(`Line ${idx+1}: all script words were recognized (approximate).`,true);
     } else if(note) setErr(note,'warn');
   }catch(e){ S.sp=null; S.liveSt=null; S.finishing=false; setErr('That recording could not be read. Try again.'); renderAll(); }
 }
 function deleteTake(){
   const p=S.paras[S.cur]; if(!p||p.active<0||S.rec!=='idle') return;
-  stopAll(); p.takes.splice(p.active,1); p.active=Math.min(p.active,p.takes.length-1);
+  stopAll(); S.selectedSeg=null; p.takes.splice(p.active,1); p.active=Math.min(p.active,p.takes.length-1);
   renderAll(); save();
 }
 function stepTake(d){
   const p=S.paras[S.cur]; if(!p||!p.takes.length||S.rec!=='idle') return;
   const n=p.active+d; if(n<0||n>=p.takes.length) return;
-  p.active=n; stopAll(); renderAll(); save();
+  p.active=n; S.selectedSeg=null; stopAll(); renderAll(); save();
 }
 
 /* ---------- playback ---------- */
@@ -595,13 +697,24 @@ function dl(blob,name){
 function exportMix(){
   const {clips,total}=layout(); if(!clips.length){ setErr('Record at least one line before exporting.'); return; }
   const sr=ctx().sampleRate, out=new Float32Array(Math.ceil(total*sr)+1);
-  for(const k of clips){ const seg=mono(k.tk.buf,k.a,k.d), off=Math.round(k.start*sr); for(let i=0;i<seg.length&&off+i<out.length;i++) out[off+i]+=seg[i]; }
+  for(const k of clips){
+    const off=Math.round(k.start*sr), src=k.tk.buf, inSr=src.sampleRate;
+    const d=mono(src,k.a,k.d);
+    const outLen=Math.round(k.d*sr);
+    for(let i=0;i<outLen&&off+i<out.length;i++){
+      const x=i*inSr/sr, j=Math.floor(x), f=x-j;
+      out[off+i]+=(d[j]||0)*(1-f)+(d[j+1]||0)*f;
+    }
+  }
   dl(wav(out,sr),'podcast-mix.wav'); setErr('Exported podcast-mix.wav',true);
 }
 function saveTake(){
   const p=S.paras[S.cur], tk=p&&activeTake(p); if(!tk||!tk.buf) return;
-  const [a,b]=range(tk);
-  dl(wav(mono(tk.buf,a,b-a),tk.buf.sampleRate),`line-${pad2(S.cur+1)}-take-${p.active+1}.wav`);
+  const pieces=partsOf(tk), sr=tk.buf.sampleRate;
+  const total=pieces.reduce((n,q)=>n+Math.round((q.b-q.a)*sr),0);
+  const data=new Float32Array(total); let off=0;
+  for(const piece of pieces){const chunk=mono(tk.buf,piece.a,piece.b-piece.a);data.set(chunk,off);off+=chunk.length;}
+  dl(wav(data,sr),`line-${pad2(S.cur+1)}-take-${p.active+1}.wav`);
 }
 
 /* ---------- rendering ---------- */
@@ -626,7 +739,7 @@ function renderList(){
     const st=document.createElement('span'); st.className='st';
     const dot=document.createElement('i'); st.appendChild(dot);
     const label=document.createElement('span');
-    label.textContent=tk&&tk.buf?`${p.takes.length} take${p.takes.length>1?'s':''} · ${fmt(range(tk)[1]-range(tk)[0])}`:'Not recorded';
+    label.textContent=tk&&tk.buf?`${p.takes.length} take${p.takes.length>1?'s':''} · ${fmt(partsOf(tk).reduce((n,q)=>n+q.b-q.a,0))}`:'Not recorded';
     st.appendChild(label);
     const nMiss=tk&&tk.words?tk.words.filter(v=>v===2).length:0;
     if(nMiss){ const m=document.createElement('span'); m.className='miss'; m.textContent=`· ${nMiss} missed`; st.appendChild(m); }
@@ -653,7 +766,7 @@ function updateStage(){
   const b=$('#recBtn'); b.classList.toggle('rec',S.rec==='rec'); b.classList.toggle('count',S.rec==='count');
   $('#cnt').textContent=S.rec==='count'?S.countLeft:'';
   $('#recLbl').textContent=S.rec==='count'?'Get ready (click to cancel)':S.rec==='rec'?'Stop':(tk?'Re-record':'Record');
-  if(S.rec!=='rec') $('#recTime').textContent=tk&&tk.buf?fmt(range(tk)[1]-range(tk)[0]):'0:00.0';
+  if(S.rec!=='rec') $('#recTime').textContent=tk&&tk.buf?fmt(partsOf(tk).reduce((n,q)=>n+q.b-q.a,0)):'0:00.0';
   $('#prevBtn').disabled=busy||S.cur<=0;
   $('#nextBtn').disabled=busy||S.cur>=n-1;
   const tn=p?p.takes.length:0;
@@ -664,11 +777,12 @@ function updateStage(){
   $('#saveTkBtn').disabled=busy||!tk;
   $('#delTkBtn').disabled=busy||!tk;
   $('#fMinus').disabled=S.set.font<=24; $('#fPlus').disabled=S.set.font>=84;
+  updateEditBtns();
 }
 function go(d){
   if(S.rec!=='idle') return;
   const n=S.cur+d; if(n<0||n>=S.paras.length) return;
-  S.cur=n; stopAll(); renderList(); updateStage(); markClips(true); save();
+  S.cur=n; S.selectedSeg=null; stopAll(); renderList(); updateStage(); markClips(true); save();
 }
 function renderTimeline(){
   const {clips,total}=layout(), pps=S.set.zoom, lane=$('#lane');
@@ -684,7 +798,7 @@ function renderTimeline(){
     const e=document.createElement('div'); e.className='tlempty'; e.textContent='Recorded lines are placed here in script order. Record line 1 to start the timeline.'; lane.appendChild(e);
   }
   for(const k of clips){
-    const el=document.createElement('div'); el.className='clip'+(k.i===S.cur?' sel':''); el.dataset.i=k.i;
+    const el=document.createElement('div'); el.className='clip'+(k.i===S.cur?' sel':'')+(`${k.i}:${k.tk.id}:${k.segId}`===S.selectedSeg?' partsel':''); el.dataset.i=k.i; el.dataset.seg=k.segId; el.dataset.take=k.tk.id;
     el.style.left=(k.start*pps)+'px'; el.style.width=Math.max(12,k.d*pps)+'px';
     const n=document.createElement('span'); n.className='n'; n.textContent=k.i+1; el.appendChild(n);
     const p=S.paras[k.i];
@@ -692,7 +806,7 @@ function renderTimeline(){
     const cv=document.createElement('canvas'); el.appendChild(cv); lane.appendChild(el);
     drawWave(cv,k,Math.max(12,k.d*pps));
   }
-  setPlayhead(false);
+  setPlayhead(false); updateEditBtns();
 }
 function drawWave(cv,k,wCss){
   const dpr=Math.min(window.devicePixelRatio||1,2);
@@ -709,7 +823,7 @@ function drawWave(cv,k,wCss){
   }
 }
 function markClips(scroll){
-  document.querySelectorAll('.clip').forEach(c=>c.classList.toggle('sel',+c.dataset.i===S.cur));
+  document.querySelectorAll('.clip').forEach(c=>{c.classList.toggle('sel',+c.dataset.i===S.cur);c.classList.toggle('partsel',`${c.dataset.i}:${c.dataset.take}:${c.dataset.seg}`===S.selectedSeg);});
   if(scroll){ const c=document.querySelector('.clip.sel'); if(c) c.scrollIntoView({block:'nearest',inline:'nearest'}); }
 }
 function setPlayhead(follow){
@@ -717,6 +831,7 @@ function setPlayhead(follow){
   const {total}=layout();
   $('#timeLbl').innerHTML=fmt(S.pos)+' <small>/ '+fmt(total)+'</small>';
   if(follow){ const sc=$('#tlscroll'); if(x>sc.scrollLeft+sc.clientWidth-40||x<sc.scrollLeft) sc.scrollLeft=Math.max(0,x-60); }
+  updateEditBtns();
 }
 
 /* ---------- persistence ---------- */
@@ -727,17 +842,17 @@ let saveT=null;
 function save(){
   clearTimeout(saveT);
   saveT=setTimeout(()=>{
-    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null}))}))};
+    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null,parts:t.parts||null}))}))};
     idbSet('project',data).catch(()=>{});
   },500);
 }
 async function restore(){
   let d=null; try{ d=await idbGet('project'); }catch(e){}
   if(!d||!d.paras){ $('#scriptTa').value=SAMPLE; S.paras=splitScript(SAMPLE).map(t=>({id:uid(),text:t,takes:[],active:-1})); return; }
-  Object.assign(S.set,d.set||{}); S.deviceId=d.deviceId||'';
+  Object.assign(S.set,d.set||{}); if(!S.set.lang) S.set.lang='en-US'; S.deviceId=d.deviceId||'';
   for(const p of d.paras){
     const np={id:p.id,text:p.text,takes:[],active:-1};
-    for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.words=t.words||null; np.takes.push(tk); }catch(e){} }
+    for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.words=t.words||null; if(Array.isArray(t.parts))tk.parts=t.parts; np.takes.push(tk); }catch(e){} }
     np.active=np.takes.length?Math.min(Math.max(p.active,0),np.takes.length-1):-1;
     S.paras.push(np);
   }
@@ -769,9 +884,9 @@ function wire(){
   ['dragleave','drop'].forEach(ev=>ed.addEventListener(ev,e=>{ e.preventDefault(); ed.classList.remove('drop'); }));
   ed.addEventListener('drop',e=>importFile(e.dataTransfer.files[0]));
   twoStep($('#resetBtn'),'Click again to erase all',()=>{
-    stopAll(); S.paras=[]; S.cur=0; S.pos=0; $('#scriptTa').value=''; S.pendingDiscard=0; updateApplyBtn(); scriptMsg('Cleared.'); renderAll(); save();
+    stopAll(); S.paras=[]; S.cur=0; S.pos=0; S.selectedSeg=null; $('#scriptTa').value=''; S.pendingDiscard=0; updateApplyBtn(); scriptMsg('Cleared.'); renderAll(); save();
   });
-  $('#list').addEventListener('click',e=>{ const li=e.target.closest('.line'); if(!li||S.rec!=='idle') return; S.cur=+li.dataset.i; stopAll(); renderList(); updateStage(); markClips(true); save(); });
+  $('#list').addEventListener('click',e=>{ const li=e.target.closest('.line'); if(!li||S.rec!=='idle') return; S.cur=+li.dataset.i; S.selectedSeg=null; stopAll(); renderList(); updateStage(); markClips(true); save(); });
   $('#list').addEventListener('keydown',e=>{ if((e.key==='Enter')&&e.target.classList.contains('line')) e.target.click(); });
   $('#micBtn').onclick=async()=>{ try{ await ensureMic(); setErr(''); }catch(e){ setErr(micError(e)); } };
   $('#devSel').onchange=async e=>{
@@ -793,13 +908,19 @@ function wire(){
   $('#fMinus').onclick=()=>{ S.set.font=Math.max(24,S.set.font-4); updateStage(); save(); };
   $('#fPlus').onclick=()=>{ S.set.font=Math.min(84,S.set.font+4); updateStage(); save(); };
   $('#playBtn').onclick=togglePlay;
+  $('#splitBtn').onclick=splitAtPlayhead; $('#cutBtn').onclick=deleteSection; $('#undoEditBtn').onclick=restoreTake;
   $('#homeBtn').onclick=()=>{ const was=!!S.play; stopAll(); S.pos=0; setPlayhead(false); $('#tlscroll').scrollLeft=0; if(was) play(0); };
   $('#zoomIn').oninput=e=>{ S.set.zoom=+e.target.value; renderTimeline(); save(); };
   $('#lane').addEventListener('click',e=>{
     const rect=$('#lane').getBoundingClientRect(); const t=Math.max(0,(e.clientX-rect.left)/S.set.zoom);
     const clip=e.target.closest('.clip');
-    if(clip&&S.rec==='idle'){ S.cur=+clip.dataset.i; renderList(); updateStage(); markClips(false); }
-    const was=!!S.play; S.pos=t; if(was) play(t); else { setPlayhead(false); }
+    if(clip&&S.rec==='idle'){
+      S.cur=+clip.dataset.i;
+      const k=layout().clips.find(x=>x.i===S.cur&&x.segId===clip.dataset.seg&&x.tk.id===clip.dataset.take);
+      selectClip(k); renderList(); updateStage(); markClips(false);
+    } else if(!clip){selectClip(null);}
+    if(S.rec!=='idle') return;
+    const was=!!S.play; S.pos=Math.min(t,layout().total); if(was) play(S.pos); else { setPlayhead(false); }
   });
   document.addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&e.detail>0) b.blur(); });
   document.addEventListener('keydown',e=>{
@@ -808,6 +929,8 @@ function wire(){
     if(e.code==='Space'){ if(t.tagName==='BUTTON') return; e.preventDefault(); toggleRec(); }
     else if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); go(1); }
     else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); go(-1); }
+    else if(e.key==='s'||e.key==='S'){e.preventDefault();splitAtPlayhead();}
+    else if(e.key==='Delete'||e.key==='Backspace'){if(selectedClip()){e.preventDefault();deleteSection();}}
     else if(e.key==='l'||e.key==='L') listen();
     else if(e.key==='p'||e.key==='P') togglePlay();
   });
@@ -820,12 +943,14 @@ function syncControls(){
   LANGS.forEach(([v,n])=>{ const o=document.createElement('option'); o.value=v; o.textContent=n; ls.appendChild(o); });
   ls.value=S.set.lang;
   const rc=$('#readChk'); rc.checked=S.set.read&&!!SR;
-  if(!SR){ rc.disabled=true; ls.disabled=true; rc.parentElement.title='Not supported in this browser. Use Chrome, Edge or Safari.'; }
+  if(!SR){ rc.disabled=true; ls.disabled=true; rc.parentElement.title='Speech recognition is not available in this browser. Try a recent version of Chrome or Edge.'; }
+  else if(!S.set.read) rc.checked=false;
 }
 (async function init(){
   wire();
   await restore();
   S.scriptText=$('#scriptTa').value;
+  if(!SR) S.set.read=false;
   syncControls(); updateApplyBtn(); renderAll(); meterLoop();
   if(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices) refreshDevices();
   const anyTake=S.paras.some(p=>p.takes.length);
