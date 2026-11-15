@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Takeline</title>
+<title>Takeline — Studio Dark</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;500&display=swap">
@@ -466,6 +466,98 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 }
 #noiseBtn.icon-action:disabled{cursor:default;opacity:.65}
 
+
+/* TAKELINE STUDIO DARK / Premium soft-minimal interface, tactile active controls */
+:root{
+ --ink:#0e1117;--panel:#171b23;--panel2:#242b36;--line:#303946;
+ --text:#f2f4f7;--muted:#9ca9b9;--rec:#ff7079;--ok:#85e5ba;
+ --amber:#e8bc75;--clip:#2a4656;--wave:#8dd6e3;--teal:#85e5ba;
+ --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Arial,sans-serif;
+ --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
+ --serif:Newsreader,Georgia,serif;color-scheme:dark;
+}
+body{background:radial-gradient(ellipse at 82% -25%,#26354a 0,transparent 50%),#10141b;color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.003em}
+.top{background:linear-gradient(180deg,rgba(30,36,47,.96),rgba(21,26,35,.98));border-bottom:1px solid #333d4b;box-shadow:0 7px 26px #080b1090,inset 0 1px 0 #ffffff0a}
+.brand{font-family:var(--sans);font-weight:760;font-size:19px;letter-spacing:-.055em;color:#f8f9fb}
+.brandtag{font-weight:700;color:#8ee8c2;font-size:9px;letter-spacing:.16em;margin-left:3px}
+.brandsub{color:#8e9eaf;letter-spacing:.01em}.stats{color:#95a5b6}.stats b{color:#edf1f5}
+.btn{background:linear-gradient(160deg,#303948,#242c39);border:1px solid #445162;border-radius:11px;color:#eaf0f6;box-shadow:0 3px 8px #080d1590,inset 0 1px 0 #ffffff13;transition:background .18s,box-shadow .18s,transform .18s,border-color .18s}
+.btn:hover:not(:disabled){background:linear-gradient(155deg,#3a4656,#2b3543);border-color:#667e91;box-shadow:0 5px 13px #080b1299,inset 0 1px 0 #ffffff17;transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 3px 9px #080b1299}
+.btn.primary{background:linear-gradient(155deg,#a4f5d0,#63d5a1);color:#112921;border-color:#a3f6cf;box-shadow:0 5px 14px #091b1780,inset 0 1px 0 #ffffff80;font-weight:700}
+.btn.primary:hover:not(:disabled){background:linear-gradient(155deg,#c1ffe4,#78e9b5);border-color:#b8ffdd;box-shadow:0 7px 18px #051a1277}
+.btn.warn{background:#3a2932;color:#ffb2ba;border-color:#65404a}
+.btn.warn:hover:not(:disabled){background:#50313b;border-color:#ab6170}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,.line:focus-visible,.settings-icon:focus-visible{outline:2px solid #9debc8;outline-offset:3px}
+.script{background:linear-gradient(160deg,#1b202a,#171c25);border-right:1px solid #303a49;box-shadow:3px 0 22px #080d1550}
+.tabs{border-bottom-color:#333c49}.tabs button{color:#93a2b6;border-radius:10px;font-weight:600;transition:background .17s,color .17s}
+.tabs button:hover{color:#e9f2f6;background:#283341}
+.tabs button[aria-selected=true]{color:#eafff4;background:linear-gradient(160deg,#34443f,#273731);border-color:#4e7366;box-shadow:inset 0 1px 0 #ffffff15}
+.line{border-radius:12px;color:#dce4ed;transition:background .15s,border-color .15s,transform .15s}
+.line:hover{background:#26323f}.line.cur{background:linear-gradient(145deg,#293c3b,#233236);border-color:#568e81;box-shadow:inset 3px 0 0 #80e6bd,0 4px 12px #080d1650}
+.line .num,.line .st{color:#9faec0}.line.has .st i{background:#85e5ba;border-color:#85e5ba}
+.editor textarea{background:#111822;border:1px solid #3d4b59;border-radius:12px;color:#e8f1f9;box-shadow:inset 0 2px 8px #080b1465}
+.hint{color:#a2b1bf}
+.stage{background:radial-gradient(ellipse at 50% 25%,#222b37 0%,#181e28 62%,#151a23 100%)}
+.lbl{color:#9ae5c6;background:#283731;border:1px solid #3e6255;border-radius:9px;box-shadow:none;font-weight:650;letter-spacing:.03em}
+.prompter .ctx{color:#8795a7;opacity:.83}
+.prompter .cur{color:#f6f7fa;text-shadow:0 1px 0 #080b1260;letter-spacing:-.012em}
+.cur.rec{color:#ffffff}.w.hit{color:#85e5ba}.w.miss{color:#f4c783}
+.controls{border-top:1px solid #35404c}
+.recwrap{background:linear-gradient(155deg,#313945,#222a36);border:1px solid #43505e;border-radius:18px;box-shadow:0 4px 11px #060b1480,inset 0 1px 0 #ffffff17}
+.recbtn{background:linear-gradient(155deg,#5a3742,#412b37);border-color:#f89aa1;box-shadow:0 4px 9px #150b1280,inset 0 2px 0 #ffffff20;transition:transform .15s,background .15s}
+.recbtn:hover{background:linear-gradient(160deg,#7a4750,#523540);transform:scale(1.045)}
+.recbtn.rec{border-color:#ff7079;box-shadow:0 0 0 4px #ff707925,0 4px 12px #170c1680}.recbtn .dot{background:#ff7079}
+.rectxt strong{color:#f6f6f7}.rectxt span{color:#a1b2c5}.meter{background:#121f26;box-shadow:inset 0 2px 4px #060c127a}.meter i{background:#85e5ba}
+.err{color:#ffa8b0}.err.info{color:#a3b2c4}.err.warn{color:#f6cd84}
+.takenav{color:#a5b4c4}
+.settings-popover{background:#212936;border:1px solid #455668;border-radius:15px;box-shadow:0 22px 60px #070b12d9,inset 0 1px 0 #ffffff17;backdrop-filter:blur(24px);color:#edf1f5}
+.settings-heading{color:#8ee5c1}.settings-popover label{color:#e4eaf0}
+.settings-popover select,.settings-popover input[type=number],.opts select,.opts input[type=number]{background:#19212c;color:#f1f4f8;border:1px solid #506174;border-radius:8px;box-shadow:none}
+.settings-popover input[type=checkbox]{accent-color:#85e5ba}
+.timeline{background:linear-gradient(180deg,#1c232d,#171d27);border-top:1px solid #3a4553;box-shadow:0 -7px 22px #080b1260}
+.tltool{border-bottom:1px solid #344050}.time{color:#f1f4f8}.time small{color:#90a1b3}.edithelp,.zoom,.legend{color:#a3b0bf}
+#tlscroll{background:linear-gradient(180deg,#121b25,#151d27);box-shadow:inset 0 4px 12px #080d175c}
+.tick{border-left-color:#2c3846}.tick span{color:#7f92a7}
+.clip{background:linear-gradient(160deg,#355a6b,#263e52);border:1px solid #517f92;border-radius:9px;box-shadow:0 4px 10px #050c1566,inset 0 1px 0 #ffffff20;transition:box-shadow .14s,opacity .14s,border-color .14s}
+.clip:hover{border-color:#92dce8;box-shadow:0 5px 13px #02081090,inset 0 1px 0 #ffffff21}
+.clip.sel{border-color:#8ce5c8;box-shadow:0 0 0 1px #73d8ba,0 4px 10px #050c1566}
+.clip.partsel{border-color:#e0fdf2;box-shadow:0 0 0 2px #8ce5c8,0 4px 12px #050c1580}
+.clip .n{background:#12232dd9;color:#dcf7f0;border-radius:5px}.clip .tk{color:#d5edf0}
+#playhead{border-left-color:#f6c783}#dropMarker{background:#85e5ba;box-shadow:0 0 12px #85e5ba80}
+#lane .tlempty{color:#8698aa}input[type=range]{accent-color:#85e5ba}
+/* Make the three existing icon buttons feel like physical studio switches. */
+#micBtn.mic-action,#noiseBtn.icon-action,.settings-menu>.settings-icon.icon-action{background:linear-gradient(155deg,#354050,#29323f);border:1px solid #506070;color:#e6eef5;border-radius:12px;box-shadow:0 4px 10px #050a1385,inset 0 1px 0 #ffffff1b;transition:background .18s,color .18s,transform .18s,box-shadow .18s}
+#micBtn.mic-action:hover:not(:disabled),#noiseBtn.icon-action:hover:not(:disabled),.settings-menu>.settings-icon.icon-action:hover{transform:translateY(-1px);border-color:#77909c}
+#micBtn.mic-ready,#micBtn.mic-ready:disabled,#noiseBtn.icon-action.is-active,.settings-menu[open]>.settings-icon.icon-action{opacity:1;color:#0b3025;background:linear-gradient(155deg,#aeffd8,#63dca9);border-color:#9cf8ce;box-shadow:0 4px 12px #06191299,inset 0 2px 0 #ffffff91,inset 0 -2px 3px #14815344}
+#noiseBtn.icon-action:disabled{opacity:.6}
+/* Keep established panel dimensions and compact dock unchanged. */
+@media(max-width:860px){.top{background:#1c232e}.stage{background:linear-gradient(145deg,#1c2530,#151b24)}}
+@media(prefers-reduced-motion:reduce){.btn,.line,.clip,.recbtn,#micBtn.mic-action,#noiseBtn.icon-action,.settings-menu>.settings-icon.icon-action{transition:none!important}}
+
+
+/* Focused UI polish: understated active line and comfortably inset tab controls. */
+.tabs{
+  padding:12px 18px 13px;
+  gap:12px;
+  align-items:center;
+}
+.tabs button{
+  min-width:0;
+  border-radius:10px;
+}
+.tabs button[aria-selected=true]{
+  border-color:transparent;
+  box-shadow:none;
+}
+.line.cur{
+  border-color:transparent;
+  box-shadow:none;
+  background:#273631;
+}
+
+/* Keep the next line visible as a quiet preview, not a second focal point. */
+.prompter #prevCtx, .prompter #nextCtx{opacity:.35;color:#8795a7;transition:opacity .2s ease}
 </style>
 </head>
 <body>
@@ -706,6 +798,24 @@ function findTrim(buf){
   if(b-a<sr*0.05) return {ts:0,te:buf.duration};
   return {ts:Math.max(0,a/sr-0.12), te:Math.min(buf.duration,b/sr+0.25)};
 }
+/* Gentle, non-destructive voice makeup gain for new recordings only.
+   Skip near-silent clips; avoid amplifying the noise floor or clipping peaks. */
+function voiceMakeupGain(buf){
+  const sr=buf.sampleRate, stride=Math.max(1,Math.floor(sr/12000));
+  let peak=0, energy=0, count=0, voiced=0;
+  for(let c=0;c<buf.numberOfChannels;c++){
+    const d=buf.getChannelData(c);
+    for(let i=0;i<d.length;i+=stride){
+      const a=Math.abs(d[i]); peak=Math.max(peak,a);
+      if(a>0.035){ energy+=a*a; count++; }
+      voiced++;
+    }
+  }
+  if(peak<0.06 || count<Math.max(10,voiced*0.005)) return 1;
+  const rms=Math.sqrt(energy/count);
+  const wanted=Math.min(2.6, Math.max(1,0.19/Math.max(rms,0.001)));
+  return Math.max(1,Math.min(wanted,0.92/peak));
+}
 async function makeTake(blob,id){
   const buf=await ctx().decodeAudioData(await blob.arrayBuffer());
   const tr=findTrim(buf);
@@ -806,7 +916,7 @@ function setMicReady(ready){
 async function ensureMic(){
   if(S.stream && S.stream.active) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw new Error('nomd');
-  const c={echoCancellation:S.set.noise,noiseSuppression:S.set.noise,autoGainControl:false};
+  const c={echoCancellation:S.set.noise,noiseSuppression:S.set.noise,autoGainControl:S.set.noise};
   if(S.deviceId) c.deviceId={exact:S.deviceId};
   S.stream=await navigator.mediaDevices.getUserMedia({audio:c});
   const ac=ctx(); const src=ac.createMediaStreamSource(S.stream);
@@ -973,7 +1083,7 @@ async function onRecStop(){
       if(spoken.length){ words=alignWords(p.text,spoken,true); if(sp.fatal) note=sp.fatal; }
       else note=sp.fatal||'No words recognized. Check your speech language, microphone and browser permissions; no missed words were assumed.';
     }
-    const tk=await makeTake(blob); tk.words=words;
+    const tk=await makeTake(blob); tk.gain=voiceMakeupGain(tk.buf); tk.words=words;
     p.takes.push(tk); p.active=p.takes.length-1; S.selectedSeg=null;
     if(S.set.auto && S.cur===idx && idx<S.paras.length-1) S.cur=idx+1;
     S.sp=null; S.liveSt=null; S.finishing=false;
@@ -1009,7 +1119,8 @@ function play(t0,endT){
   for(const k of clips){
     const s=Math.max(k.start,t0), e=Math.min(k.start+k.d,endT);
     if(e-s<=0.001) continue;
-    const src=c.createBufferSource(); src.buffer=k.tk.buf; src.connect(c.destination);
+    const src=c.createBufferSource(); src.buffer=k.tk.buf;
+    const makeup=c.createGain(); makeup.gain.value=k.tk.gain||1; src.connect(makeup); makeup.connect(c.destination);
     src.start(base+(s-t0), k.a+(s-k.start), e-s); nodes.push(src);
   }
   S.play={base,t0,end:endT,nodes}; S.pos=t0; updatePlayBtn(); requestAnimationFrame(loop);
@@ -1067,7 +1178,7 @@ function exportMix(){
     const outLen=Math.round(k.d*sr);
     for(let i=0;i<outLen&&off+i<out.length;i++){
       const x=i*inSr/sr, j=Math.floor(x), f=x-j;
-      out[off+i]+=(d[j]||0)*(1-f)+(d[j+1]||0)*f;
+      out[off+i]+=((d[j]||0)*(1-f)+(d[j+1]||0)*f)*(k.tk.gain||1);
     }
   }
   dl(wav(out,sr),'podcast-mix.wav'); setErr('Exported podcast-mix.wav',true);
@@ -1077,7 +1188,7 @@ function saveTake(){
   const pieces=partsOf(tk), sr=tk.buf.sampleRate;
   const total=pieces.reduce((n,q)=>n+Math.round((q.b-q.a)*sr),0);
   const data=new Float32Array(total); let off=0;
-  for(const piece of pieces){const chunk=mono(tk.buf,piece.a,piece.b-piece.a);data.set(chunk,off);off+=chunk.length;}
+  for(const piece of pieces){const chunk=mono(tk.buf,piece.a,piece.b-piece.a);for(let j=0;j<chunk.length;j++)chunk[j]*=(tk.gain||1);data.set(chunk,off);off+=chunk.length;}
   dl(wav(data,sr),`line-${pad2(S.cur+1)}-take-${p.active+1}.wav`);
 }
 
@@ -1235,7 +1346,7 @@ let saveT=null;
 function save(){
   clearTimeout(saveT);
   saveT=setTimeout(()=>{
-    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,timelineOrder:S.timelineOrder,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,words:t.words||null,parts:t.parts||null}))}))};
+    const data={cur:S.cur,set:S.set,deviceId:S.deviceId,timelineOrder:S.timelineOrder,paras:S.paras.map(p=>({id:p.id,text:p.text,active:p.active,takes:p.takes.map(t=>({id:t.id,blob:t.blob,gain:t.gain||1,words:t.words||null,parts:t.parts||null}))}))};
     idbSet('project',data).catch(()=>{});
   },500);
 }
@@ -1246,7 +1357,7 @@ async function restore(){
   Object.assign(S.set,d.set||{}); if(typeof S.set.noise!=='boolean') S.set.noise=true; if(!S.set.lang) S.set.lang='en-US'; S.deviceId=d.deviceId||'';
   for(const p of d.paras){
     const np={id:p.id,text:p.text,takes:[],active:-1};
-    for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.words=t.words||null; if(Array.isArray(t.parts))tk.parts=t.parts; np.takes.push(tk); }catch(e){} }
+    for(const t of p.takes||[]){ try{ const tk=await makeTake(t.blob,t.id); tk.gain=t.gain||1; tk.words=t.words||null; if(Array.isArray(t.parts))tk.parts=t.parts; np.takes.push(tk); }catch(e){} }
     np.active=np.takes.length?Math.min(Math.max(p.active,0),np.takes.length-1):-1;
     S.paras.push(np);
   }
